@@ -1,0 +1,105 @@
+// @ts-nocheck
+import { v } from "convex/values";
+import { mutation, query } from "./_generated/server";
+
+export const getUserRepos = query({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("repos")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
+  },
+});
+
+export const getActiveRepo = query({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    const repos = await ctx.db
+      .query("repos")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
+
+    return repos.find((r) => r.isActive) ?? null;
+  },
+});
+
+export const upsertRepo = mutation({
+  args: {
+    userId: v.id("users"),
+    githubId: v.number(),
+    name: v.string(),
+    fullName: v.string(),
+    description: v.optional(v.string()),
+    language: v.optional(v.string()),
+    pushedAt: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const existing = await ctx.db
+      .query("repos")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
+
+    const match = existing.find((r) => r.githubId === args.githubId);
+
+    if (match) {
+      await ctx.db.patch(match._id, {
+        name: args.name,
+        fullName: args.fullName,
+        description: args.description,
+        language: args.language,
+        pushedAt: args.pushedAt,
+      });
+      return match._id;
+    }
+
+    return await ctx.db.insert("repos", {
+      ...args,
+      isActive: false,
+      lastScannedAt: undefined,
+      createdAt: Date.now(),
+    });
+  },
+});
+
+export const selectRepo = mutation({
+  args: {
+    userId: v.id("users"),
+    repoId: v.id("repos"),
+  },
+  handler: async (ctx, args) => {
+    // Deactivate all repos for this user
+    const userRepos = await ctx.db
+      .query("repos")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
+
+    for (const repo of userRepos) {
+      if (repo.isActive) {
+        await ctx.db.patch(repo._id, { isActive: false });
+      }
+    }
+
+    // Activate selected repo
+    await ctx.db.patch(args.repoId, { isActive: true });
+  },
+});
+
+export const updateLastScanned = mutation({
+  args: {
+    repoId: v.id("repos"),
+    lastScannedAt: v.number(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.repoId, {
+      lastScannedAt: args.lastScannedAt,
+    });
+  },
+});
+
+export const resetLastScanned = mutation({
+  args: { repoId: v.id("repos") },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.repoId, { lastScannedAt: undefined });
+  },
+});
