@@ -12,11 +12,16 @@ type StatusFilter = "all" | "pending" | "published" | "discarded";
 export default function DraftsPage() {
   const [filter, setFilter] = useState<StatusFilter>("all");
   const { user } = useCurrentUser();
+  const activeRepo = useQuery(
+    api.repos.getActiveRepo,
+    user ? { userId: user._id } : "skip"
+  );
   const drafts = useQuery(
     api.drafts.getUserDrafts,
-    user
+    user && activeRepo
       ? {
           userId: user._id,
+          repoId: activeRepo._id,
           status: filter === "all" ? undefined : filter,
         }
       : "skip"

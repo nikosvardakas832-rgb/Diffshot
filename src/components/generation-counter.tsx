@@ -2,31 +2,26 @@
 
 import { useCurrentUser } from "@/hooks/use-current-user";
 
-const FREE_LIMIT = 3;
+const GENERATION_LIMITS: Record<string, number> = {
+  free: 3,
+  pro: 100,
+};
 
 export function GenerationCounter() {
   const { user } = useCurrentUser();
 
   if (!user) return null;
 
-  if (user.tier === "pro") {
-    return (
-      <div className="text-sm text-muted-foreground">
-        <span className="font-medium text-foreground">Pro</span> — Unlimited
-        generations
-      </div>
-    );
-  }
-
+  const limit = GENERATION_LIMITS[user.tier] ?? 3;
   const used = user.generationsUsedThisMonth;
-  const percentage = Math.min((used / FREE_LIMIT) * 100, 100);
+  const percentage = Math.min((used / limit) * 100, 100);
 
   return (
     <div className="space-y-2">
       <div className="flex items-center justify-between text-sm">
         <span className="text-muted-foreground">Generations</span>
         <span className="font-medium">
-          {used} / {FREE_LIMIT}
+          {used} / {limit}
         </span>
       </div>
       <div className="h-2 rounded-full bg-secondary">

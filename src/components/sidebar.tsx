@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCurrentUser } from "@/hooks/use-current-user";
@@ -12,6 +13,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { GenerationCounter } from "./generation-counter";
+import { UpgradeDialog } from "./upgrade-dialog";
 
 const navItems = [
   { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
@@ -23,6 +25,7 @@ const navItems = [
 export function Sidebar() {
   const { user } = useCurrentUser();
   const pathname = usePathname();
+  const [showUpgrade, setShowUpgrade] = useState(false);
 
   return (
     <aside className="flex h-full w-64 flex-col border-r border-border bg-card">
@@ -64,15 +67,16 @@ export function Sidebar() {
       <div className="border-t border-border p-4">
         <GenerationCounter />
         {user?.tier === "free" && (
-          <Link
-            href="/dashboard/upgrade"
-            className="mt-3 flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-violet-600 to-blue-600 px-3 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
+          <button
+            onClick={() => setShowUpgrade(true)}
+            className="mt-3 flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-violet-600 to-blue-600 px-3 py-2 text-sm font-medium text-white transition-opacity hover:opacity-90"
           >
             <Zap className="h-4 w-4" />
             Upgrade to Pro
-          </Link>
+          </button>
         )}
       </div>
+      <UpgradeDialog open={showUpgrade} onOpenChange={setShowUpgrade} />
     </aside>
   );
 }

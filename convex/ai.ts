@@ -8,7 +8,7 @@ import { api } from "./_generated/api";
 
 const GENERATION_LIMITS: Record<string, number> = {
   free: 3,
-  pro: Infinity,
+  pro: 100,
 };
 
 export const generateDrafts = action({
@@ -29,7 +29,7 @@ export const generateDrafts = action({
     const limit = GENERATION_LIMITS[user.tier];
     if (user.generationsUsedThisMonth >= limit) {
       throw new Error(
-        "Generation limit reached. Upgrade to Pro for unlimited generations."
+        "Generation limit reached. Upgrade to Pro for 100 generations per month."
       );
     }
 

@@ -15,19 +15,19 @@ const plans = [
     period: "forever",
     features: [
       "3 generations per month",
-      "1 connected repo",
+      "Unlimited repos",
       "All 3 visual card types",
       "Watermarked cards",
     ],
-    notIncluded: ["Unlimited generations", "Up to 3 repos", "Clean cards"],
+    notIncluded: ["100 generations per month", "Clean cards"],
   },
   {
     name: "Pro",
     price: "$14",
     period: "/month",
     features: [
-      "Unlimited generations",
-      "Up to 3 connected repos",
+      "100 generations per month",
+      "Unlimited repos",
       "All 3 visual card types",
       "Clean cards (no watermark)",
       "Priority support",

@@ -8,11 +8,13 @@ import { Button } from "@/components/ui/button";
 import { Loader2, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { Id } from "../../convex/_generated/dataModel";
+import { UpgradeDialog } from "./upgrade-dialog";
 
 const STALE_SCAN_MS = 2 * 60 * 1000; // 2 minutes
 
 export function ScanButton({ repoId }: { repoId?: Id<"repos"> }) {
   const [scanning, setScanning] = useState(false);
+  const [showUpgrade, setShowUpgrade] = useState(false);
   const { userId: clerkId } = useAuth();
   const fetchCommits = useAction(api.github.fetchAndProcessCommits);
   const generateDrafts = useAction(api.ai.generateDrafts);
@@ -85,9 +87,16 @@ export function ScanButton({ repoId }: { repoId?: Id<"repos"> }) {
           // Ignore update failure
         }
       }
-      toast.error(
-        error instanceof Error ? error.message : "Scan failed. Please try again."
-      );
+      if (
+        error instanceof Error &&
+        error.message.includes("Generation limit reached")
+      ) {
+        setShowUpgrade(true);
+      } else {
+        toast.error(
+          error instanceof Error ? error.message : "Scan failed. Please try again."
+        );
+      }
     } finally {
       setScanning(false);
     }
@@ -107,24 +116,27 @@ export function ScanButton({ repoId }: { repoId?: Id<"repos"> }) {
   const isRunning = scanning || isScanActive;
 
   return (
-    <Button
-      onClick={handleScan}
-      disabled={isRunning || !repoId}
-      className="gap-2"
-    >
-      {isRunning ? (
-        <>
-          <Loader2 className="h-4 w-4 animate-spin" />
-          {latestScan?.status === "generating"
-            ? "Generating drafts..."
-            : "Scanning commits..."}
-        </>
-      ) : (
-        <>
-          <RefreshCw className="h-4 w-4" />
-          Scan for New Commits
-        </>
-      )}
-    </Button>
+    <>
+      <Button
+        onClick={handleScan}
+        disabled={isRunning || !repoId}
+        className="gap-2"
+      >
+        {isRunning ? (
+          <>
+            <Loader2 className="h-4 w-4 animate-spin" />
+            {latestScan?.status === "generating"
+              ? "Generating drafts..."
+              : "Scanning commits..."}
+          </>
+        ) : (
+          <>
+            <RefreshCw className="h-4 w-4" />
+            Scan for New Commits
+          </>
+        )}
+      </Button>
+      <UpgradeDialog open={showUpgrade} onOpenChange={setShowUpgrade} />
+    </>
   );
 }

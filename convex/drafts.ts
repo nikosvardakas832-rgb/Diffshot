@@ -46,6 +46,7 @@ export const getDraftById = query({
 export const getUserDrafts = query({
   args: {
     userId: v.id("users"),
+    repoId: v.optional(v.id("repos")),
     status: v.optional(
       v.union(
         v.literal("pending"),
@@ -55,7 +56,16 @@ export const getUserDrafts = query({
     ),
   },
   handler: async (ctx, args) => {
-    if (args.status) {
+    let drafts;
+    if (args.repoId) {
+      drafts = await ctx.db
+        .query("drafts")
+        .withIndex("by_repo", (q) => q.eq("repoId", args.repoId!))
+        .order("desc")
+        .collect();
+      // Filter by userId and optionally status
+      drafts = drafts.filter((d) => d.userId === args.userId);
+    } else if (args.status) {
       return await ctx.db
         .query("drafts")
         .withIndex("by_status", (q) =>
@@ -63,13 +73,18 @@ export const getUserDrafts = query({
         )
         .order("desc")
         .collect();
+    } else {
+      return await ctx.db
+        .query("drafts")
+        .withIndex("by_user", (q) => q.eq("userId", args.userId))
+        .order("desc")
+        .collect();
     }
 
-    return await ctx.db
-      .query("drafts")
-      .withIndex("by_user", (q) => q.eq("userId", args.userId))
-      .order("desc")
-      .collect();
+    if (args.status) {
+      drafts = drafts.filter((d) => d.status === args.status);
+    }
+    return drafts;
   },
 });
 

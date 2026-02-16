@@ -17,7 +17,9 @@ export default function DashboardPage() {
   );
   const drafts = useQuery(
     api.drafts.getUserDrafts,
-    user ? { userId: user._id, status: "pending" } : "skip"
+    user && activeRepo
+      ? { userId: user._id, repoId: activeRepo._id, status: "pending" }
+      : "skip"
   );
 
   if (!user) {
