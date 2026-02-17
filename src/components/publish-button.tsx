@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useAction } from "convex/react";
+import { useAction, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
 import { Button } from "@/components/ui/button";
 import { Loader2 } from "lucide-react";
@@ -22,6 +22,8 @@ export function PublishButton({ draftId }: { draftId: Id<"drafts"> }) {
   const [publishing, setPublishing] = useState(false);
   const { user } = useCurrentUser();
   const publishTweet = useAction(api.twitter.publishTweet);
+  const generateUploadUrl = useMutation(api.drafts.generateUploadUrl);
+  const setVisualAsset = useMutation(api.drafts.setVisualAsset);
 
   const hasTwitter = !!user?.twitterAccessToken;
 
@@ -36,6 +38,22 @@ export function PublishButton({ draftId }: { draftId: Id<"drafts"> }) {
 
     setPublishing(true);
     try {
+      // Generate and upload the visual asset if not already stored
+      const ogResponse = await fetch(`/api/og/${draftId}?watermark=false`);
+      if (ogResponse.ok) {
+        const imageBlob = await ogResponse.blob();
+        const uploadUrl = await generateUploadUrl();
+        const uploadResponse = await fetch(uploadUrl, {
+          method: "POST",
+          headers: { "Content-Type": imageBlob.type },
+          body: imageBlob,
+        });
+        if (uploadResponse.ok) {
+          const { storageId } = await uploadResponse.json();
+          await setVisualAsset({ draftId, visualAssetId: storageId });
+        }
+      }
+
       const result = await publishTweet({
         userId: user._id,
         draftId,

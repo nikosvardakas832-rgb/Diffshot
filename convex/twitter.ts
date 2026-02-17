@@ -6,12 +6,12 @@ import { action } from "./_generated/server";
 import { api } from "./_generated/api";
 
 const TWITTER_API = "https://api.twitter.com/2";
-const TWITTER_UPLOAD_API = "https://upload.twitter.com/1.1";
+const TWITTER_MEDIA_API = "https://api.x.com/2/media/upload";
 
 export const refreshTokenIfNeeded = action({
   args: { userId: v.id("users") },
   handler: async (ctx, args) => {
-    const user = await ctx.runQuery(api.users.getCurrentUser, {});
+    const user = await ctx.runQuery(api.users.getUserById, { userId: args.userId });
     if (!user) throw new Error("User not found");
 
     // Check if token is expired (with 5-minute buffer)
@@ -83,84 +83,31 @@ export const publishTweet = action({
 
     let mediaId: string | undefined;
 
-    // Upload media if visual asset exists
+    // Upload media if visual asset exists (simple v2 upload)
     if (assetUrl) {
       const imageResponse = await fetch(assetUrl);
       const imageBuffer = await imageResponse.arrayBuffer();
 
-      // Step 1: INIT
-      const initResponse = await fetch(
-        `${TWITTER_UPLOAD_API}/media/upload.json`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: new URLSearchParams({
-            command: "INIT",
-            total_bytes: imageBuffer.byteLength.toString(),
-            media_type: "image/png",
-            media_category: "tweet_image",
-          }),
-        }
-      );
-
-      if (!initResponse.ok) {
-        throw new Error(`Media upload INIT failed: ${await initResponse.text()}`);
-      }
-
-      const initData = await initResponse.json();
-      mediaId = initData.media_id_string;
-
-      // Step 2: APPEND
       const formData = new FormData();
-      formData.append("command", "APPEND");
-      formData.append("media_id", mediaId!);
-      formData.append("segment_index", "0");
       formData.append(
-        "media_data",
-        Buffer.from(imageBuffer).toString("base64")
+        "media",
+        new Blob([imageBuffer], { type: "image/png" }),
+        "image.png"
       );
+      formData.append("media_category", "tweet_image");
 
-      const appendResponse = await fetch(
-        `${TWITTER_UPLOAD_API}/media/upload.json`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-          body: formData,
-        }
-      );
+      const uploadResponse = await fetch(TWITTER_MEDIA_API, {
+        method: "POST",
+        headers: { Authorization: `Bearer ${accessToken}` },
+        body: formData,
+      });
 
-      if (!appendResponse.ok) {
-        throw new Error(
-          `Media upload APPEND failed: ${await appendResponse.text()}`
-        );
+      if (!uploadResponse.ok) {
+        throw new Error(`Media upload failed (${uploadResponse.status}): ${await uploadResponse.text()}`);
       }
 
-      // Step 3: FINALIZE
-      const finalizeResponse = await fetch(
-        `${TWITTER_UPLOAD_API}/media/upload.json`,
-        {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: new URLSearchParams({
-            command: "FINALIZE",
-            media_id: mediaId!,
-          }),
-        }
-      );
-
-      if (!finalizeResponse.ok) {
-        throw new Error(
-          `Media upload FINALIZE failed: ${await finalizeResponse.text()}`
-        );
-      }
+      const uploadData = await uploadResponse.json();
+      mediaId = uploadData.data?.id ?? uploadData.media_id_string;
     }
 
     // Create tweet

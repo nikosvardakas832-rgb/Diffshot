@@ -96,6 +96,13 @@ export const storeTwitterTokens = mutation({
   },
 });
 
+export const getUserById = query({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    return await ctx.db.get(args.userId);
+  },
+});
+
 export const getCurrentUser = query({
   args: {},
   handler: async (ctx) => {
