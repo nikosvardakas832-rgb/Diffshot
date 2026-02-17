@@ -1,35 +1,38 @@
 // @ts-nocheck
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation } from "./_generated/server";
 
 export const upgradeUser = mutation({
   args: {
     userId: v.id("users"),
-    stripeCustomerId: v.string(),
-    stripeSubscriptionId: v.string(),
+    polarCustomerId: v.string(),
+    polarSubscriptionId: v.string(),
   },
   handler: async (ctx, args) => {
     await ctx.db.patch(args.userId, {
       tier: "pro",
-      stripeCustomerId: args.stripeCustomerId,
-      stripeSubscriptionId: args.stripeSubscriptionId,
+      polarCustomerId: args.polarCustomerId,
+      polarSubscriptionId: args.polarSubscriptionId,
+      generationsUsedThisMonth: 0,
+      generationResetDate: Date.now(),
     });
   },
 });
 
 export const downgradeByCustomerId = mutation({
-  args: { stripeCustomerId: v.string() },
+  args: { polarCustomerId: v.string() },
   handler: async (ctx, args) => {
-    // Find user by stripe customer ID
     const users = await ctx.db.query("users").collect();
     const user = users.find(
-      (u) => u.stripeCustomerId === args.stripeCustomerId
+      (u) => u.polarCustomerId === args.polarCustomerId
     );
 
     if (user) {
       await ctx.db.patch(user._id, {
         tier: "free",
-        stripeSubscriptionId: undefined,
+        polarSubscriptionId: undefined,
+        generationsUsedThisMonth: 0,
+        generationResetDate: Date.now(),
       });
     }
   },

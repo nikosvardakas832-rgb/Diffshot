@@ -1,11 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, Zap } from "lucide-react";
-import { useState } from "react";
+import { PolarEmbedCheckout } from "@polar-sh/checkout/embed";
 import { toast } from "sonner";
 
 const plans = [
@@ -37,20 +38,34 @@ const plans = [
 ];
 
 export default function UpgradePage() {
+  const { user, clerkId } = useCurrentUser();
   const [loading, setLoading] = useState(false);
-  const { user } = useCurrentUser();
 
   const handleUpgrade = async () => {
+    if (!clerkId) return;
     setLoading(true);
+
     try {
-      const response = await fetch("/api/stripe/checkout", {
+      const response = await fetch("/api/polar/checkout", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: process.env.NEXT_PUBLIC_POLAR_PRODUCT_ID!,
+          customerExternalId: clerkId,
+        }),
       });
 
-      if (!response.ok) throw new Error("Failed to create checkout session");
+      if (!response.ok) throw new Error("Failed to create checkout");
 
       const { url } = await response.json();
-      window.location.href = url;
+
+      const checkout = await PolarEmbedCheckout.create(url, {
+        theme: "dark",
+      });
+
+      checkout.addEventListener("success", () => {
+        toast.success("Upgrade successful! Welcome to Pro.");
+      });
     } catch {
       toast.error("Failed to start checkout. Please try again.");
     } finally {
@@ -122,11 +137,15 @@ export default function UpgradePage() {
             {plan.name === "Pro" ? (
               <Button
                 onClick={handleUpgrade}
-                disabled={loading || user?.tier === "pro"}
+                disabled={!clerkId || loading || user?.tier === "pro"}
                 className="w-full gap-2 bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700"
               >
                 <Zap className="h-4 w-4" />
-                {user?.tier === "pro" ? "Current Plan" : "Upgrade Now"}
+                {user?.tier === "pro"
+                  ? "Current Plan"
+                  : loading
+                    ? "Loading..."
+                    : "Upgrade Now"}
               </Button>
             ) : (
               <Button variant="outline" className="w-full" disabled>

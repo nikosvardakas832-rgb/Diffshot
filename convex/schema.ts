@@ -14,8 +14,8 @@ export default defineSchema({
     tier: v.union(v.literal("free"), v.literal("pro")),
     generationsUsedThisMonth: v.number(),
     generationResetDate: v.number(),
-    stripeCustomerId: v.optional(v.string()),
-    stripeSubscriptionId: v.optional(v.string()),
+    polarCustomerId: v.optional(v.string()),
+    polarSubscriptionId: v.optional(v.string()),
     createdAt: v.number(),
   })
     .index("by_clerk_id", ["clerkId"])

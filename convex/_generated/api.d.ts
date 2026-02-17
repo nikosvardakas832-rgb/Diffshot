@@ -13,9 +13,9 @@ import type * as commits from "../commits.js";
 import type * as drafts from "../drafts.js";
 import type * as github from "../github.js";
 import type * as http from "../http.js";
+import type * as polar from "../polar.js";
 import type * as repos from "../repos.js";
 import type * as scans from "../scans.js";
-import type * as stripe from "../stripe.js";
 import type * as twitter from "../twitter.js";
 import type * as users from "../users.js";
 
@@ -31,9 +31,9 @@ declare const fullApi: ApiFromModules<{
   drafts: typeof drafts;
   github: typeof github;
   http: typeof http;
+  polar: typeof polar;
   repos: typeof repos;
   scans: typeof scans;
-  stripe: typeof stripe;
   twitter: typeof twitter;
   users: typeof users;
 }>;

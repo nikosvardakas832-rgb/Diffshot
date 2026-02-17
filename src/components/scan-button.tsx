@@ -42,9 +42,6 @@ export function ScanButton({ repoId }: { repoId?: Id<"repos"> }) {
       });
       // Reset lastScannedAt so we re-fetch commits from before the stuck scan
       await updateLastScanned({ repoId, lastScannedAt: 0 });
-    } else if (latestScan?.status === "failed") {
-      // Reset lastScannedAt for failed scans too, so we retry the same commits
-      await updateLastScanned({ repoId, lastScannedAt: 0 });
     }
 
     setScanning(true);

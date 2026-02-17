@@ -11,6 +11,8 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Check, Zap } from "lucide-react";
+import { useCurrentUser } from "@/hooks/use-current-user";
+import { PolarEmbedCheckout } from "@polar-sh/checkout/embed";
 import { toast } from "sonner";
 
 const plans = [
@@ -47,19 +49,36 @@ interface UpgradeDialogProps {
 }
 
 export function UpgradeDialog({ open, onOpenChange }: UpgradeDialogProps) {
+  const { clerkId } = useCurrentUser();
   const [loading, setLoading] = useState(false);
 
   const handleUpgrade = async () => {
+    if (!clerkId) return;
     setLoading(true);
+
     try {
-      const response = await fetch("/api/stripe/checkout", {
+      const response = await fetch("/api/polar/checkout", {
         method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productId: process.env.NEXT_PUBLIC_POLAR_PRODUCT_ID!,
+          customerExternalId: clerkId,
+        }),
       });
 
-      if (!response.ok) throw new Error("Failed to create checkout session");
+      if (!response.ok) throw new Error("Failed to create checkout");
 
       const { url } = await response.json();
-      window.location.href = url;
+
+      onOpenChange(false);
+
+      const checkout = await PolarEmbedCheckout.create(url, {
+        theme: "dark",
+      });
+
+      checkout.addEventListener("success", () => {
+        toast.success("Upgrade successful! Welcome to Pro.");
+      });
     } catch {
       toast.error("Failed to start checkout. Please try again.");
     } finally {
@@ -126,11 +145,11 @@ export function UpgradeDialog({ open, onOpenChange }: UpgradeDialogProps) {
               {plan.name === "Pro" ? (
                 <Button
                   onClick={handleUpgrade}
-                  disabled={loading}
+                  disabled={!clerkId || loading}
                   className="w-full gap-2 bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700"
                 >
                   <Zap className="h-4 w-4" />
-                  Upgrade Now
+                  {loading ? "Loading..." : "Upgrade Now"}
                 </Button>
               ) : (
                 <Button variant="outline" className="w-full" disabled>

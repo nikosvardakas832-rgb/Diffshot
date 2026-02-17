@@ -8,7 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { GenerationCounter } from "@/components/generation-counter";
 import { Check, ExternalLink, Github, LogOut } from "lucide-react";
-import Link from "next/link";
+import { useState } from "react";
+import { UpgradeDialog } from "@/components/upgrade-dialog";
 
 function XLogo({ className }: { className?: string }) {
   return (
@@ -21,6 +22,7 @@ function XLogo({ className }: { className?: string }) {
 export default function SettingsPage() {
   const { user: clerkUser } = useUser();
   const { user } = useCurrentUser();
+  const [showUpgrade, setShowUpgrade] = useState(false);
 
   if (!user) {
     return (
@@ -87,19 +89,36 @@ export default function SettingsPage() {
         <h2 className="mb-4 text-lg font-semibold">Subscription</h2>
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <div>
-              <div className="font-medium">
-                {user.tier === "pro" ? "Pro Plan" : "Free Plan"}
-              </div>
-              <div className="text-sm text-muted-foreground">
-                {user.tier === "pro"
-                  ? "Unlimited generations, 3 repos, clean cards"
-                  : "3 generations/month, 1 repo, watermarked cards"}
-              </div>
+            <div className="font-medium">
+              {user.tier === "pro" ? "Pro Plan" : "Free Plan"}
             </div>
-            {user.tier === "free" && (
-              <Button size="sm" asChild>
-                <Link href="/dashboard/upgrade">Upgrade</Link>
+            {user.tier === "free" ? (
+              <Button size="sm" onClick={() => setShowUpgrade(true)}>
+                Upgrade
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                size="sm"
+                className="gap-1.5"
+                onClick={async () => {
+                  try {
+                    const res = await fetch("/api/polar/portal", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ polarCustomerId: user.polarCustomerId }),
+                    });
+                    const data = await res.json();
+                    if (data.url) {
+                      window.open(data.url, "_blank");
+                    }
+                  } catch (err) {
+                    console.error("Failed to open customer portal:", err);
+                  }
+                }}
+              >
+                Manage Subscription
+                <ExternalLink className="h-3.5 w-3.5" />
               </Button>
             )}
           </div>
@@ -119,6 +138,7 @@ export default function SettingsPage() {
           </Button>
         </SignOutButton>
       </Card>
+      <UpgradeDialog open={showUpgrade} onOpenChange={setShowUpgrade} />
     </div>
   );
 }
