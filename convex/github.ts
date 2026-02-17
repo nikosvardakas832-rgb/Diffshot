@@ -34,6 +34,10 @@ async function githubFetch(path: string, token: string) {
     },
   });
 
+  if (res.status === 401) {
+    throw new Error("GITHUB_TOKEN_EXPIRED");
+  }
+
   if (!res.ok) {
     throw new Error(`GitHub API error: ${res.status} ${await res.text()}`);
   }

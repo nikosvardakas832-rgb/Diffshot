@@ -72,6 +72,26 @@ export function ScanButton({ repoId }: { repoId?: Id<"repos"> }) {
         toast.info("Scan complete but no drafts were generated.");
       }
     } catch (error) {
+      // Re-sync GitHub token and retry on expired token
+      if (
+        error instanceof Error &&
+        error.message.includes("GITHUB_TOKEN_EXPIRED")
+      ) {
+        try {
+          const res = await fetch("/api/sync-github-token");
+          if (res.ok) {
+            toast.info("GitHub token refreshed. Retrying...");
+            setScanning(false);
+            return handleScan();
+          }
+        } catch {
+          // Fall through to error handling
+        }
+        toast.error("GitHub token expired. Please sign out and sign back in.");
+        setScanning(false);
+        return;
+      }
+
       // Mark scan as failed so the button doesn't get stuck
       if (scanId) {
         try {

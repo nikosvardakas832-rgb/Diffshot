@@ -31,7 +31,24 @@ export function RepoSelector() {
       await listRepos({ clerkId });
       toast.success("Repos refreshed!");
     } catch (error) {
-      toast.error("Failed to fetch repos. Check your GitHub connection.");
+      if (
+        error instanceof Error &&
+        error.message.includes("GITHUB_TOKEN_EXPIRED")
+      ) {
+        try {
+          const res = await fetch("/api/sync-github-token");
+          if (res.ok) {
+            toast.info("GitHub token refreshed. Retrying...");
+            setLoading(false);
+            return handleRefresh();
+          }
+        } catch {
+          // Fall through
+        }
+        toast.error("GitHub token expired. Please sign out and sign back in.");
+      } else {
+        toast.error("Failed to fetch repos. Check your GitHub connection.");
+      }
     } finally {
       setLoading(false);
     }
