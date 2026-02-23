@@ -86,12 +86,29 @@ export const storeTwitterTokens = mutation({
     twitterAccessToken: v.string(),
     twitterRefreshToken: v.string(),
     twitterTokenExpiresAt: v.number(),
+    twitterUsername: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    await ctx.db.patch(args.userId, {
+    const patch: Record<string, unknown> = {
       twitterAccessToken: args.twitterAccessToken,
       twitterRefreshToken: args.twitterRefreshToken,
       twitterTokenExpiresAt: args.twitterTokenExpiresAt,
+    };
+    if (args.twitterUsername) {
+      patch.twitterUsername = args.twitterUsername;
+    }
+    await ctx.db.patch(args.userId, patch);
+  },
+});
+
+export const storeTwitterUsername = mutation({
+  args: {
+    userId: v.id("users"),
+    twitterUsername: v.string(),
+  },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.userId, {
+      twitterUsername: args.twitterUsername,
     });
   },
 });
@@ -135,6 +152,65 @@ export const incrementGenerations = mutation({
         generationsUsedThisMonth: user.generationsUsedThisMonth + 1,
       });
     }
+  },
+});
+
+export const disconnectGithub = mutation({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.userId, {
+      githubAccessToken: undefined,
+    });
+  },
+});
+
+export const disconnectTwitter = mutation({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    await ctx.db.patch(args.userId, {
+      twitterAccessToken: undefined,
+      twitterRefreshToken: undefined,
+      twitterTokenExpiresAt: undefined,
+      twitterUsername: undefined,
+    });
+  },
+});
+
+export const deleteAccount = mutation({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    const user = await ctx.db.get(args.userId);
+    if (!user) throw new Error("User not found");
+
+    // Delete all user's drafts
+    const drafts = await ctx.db
+      .query("drafts")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
+    for (const draft of drafts) {
+      await ctx.db.delete(draft._id);
+    }
+
+    // Delete all user's repos
+    const repos = await ctx.db
+      .query("repos")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
+    for (const repo of repos) {
+      await ctx.db.delete(repo._id);
+    }
+
+    // Delete all user's scans
+    const scans = await ctx.db
+      .query("scans")
+      .withIndex("by_user", (q) => q.eq("userId", args.userId))
+      .collect();
+    for (const scan of scans) {
+      await ctx.db.delete(scan._id);
+    }
+
+    // Delete the user
+    await ctx.db.delete(args.userId);
   },
 });
 

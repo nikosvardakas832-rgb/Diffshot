@@ -137,7 +137,7 @@ export function ScanButton({ repoId }: { repoId?: Id<"repos"> }) {
       <Button
         onClick={handleScan}
         disabled={isRunning || !repoId}
-        className="gap-2"
+        className="gap-2 shadow-[0_0_20px_rgba(185,81,38,0.15)]"
       >
         {isRunning ? (
           <>

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Check, Zap } from "lucide-react";
+import { Check, Info, Zap } from "lucide-react";
 
 const plans = [
   {
@@ -10,76 +10,95 @@ const plans = [
     href: "/sign-up",
     highlight: false,
     features: [
-      "3 generations per month",
-      "Unlimited repos",
-      "All 3 visual card types",
-      "Watermarked cards",
+      { text: "3 generations per month" },
+      { text: "Unlimited repos" },
+      { text: "All 3 visual card types" },
+      { text: "Watermarked cards", neutral: true },
     ],
   },
   {
     name: "Pro",
-    price: "$14",
+    price: "$9",
     period: "/month",
     cta: "Start Pro",
     href: "/sign-up",
     highlight: true,
     features: [
-      "100 generations per month",
-      "Unlimited repos",
-      "All 3 visual card types",
-      "Clean cards (no watermark)",
-      "Priority support",
+      { text: "50 generations per month" },
+      { text: "Unlimited repos" },
+      { text: "All 3 visual card types" },
+      { text: "Clean cards (no watermark)" },
+      { text: "Priority support" },
     ],
   },
 ];
 
 export function Pricing() {
   return (
-    <section className="border-t border-border px-6 py-24 lg:px-8">
+    <section id="pricing" className="relative border-t border-[#1a1a1f] px-6 py-20 lg:px-8">
+      {/* Subtle warm glow behind pricing */}
+      <div className="pointer-events-none absolute inset-0 -z-10">
+        <div className="absolute left-1/2 top-1/2 h-[400px] w-[600px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#B95126]/[0.04] blur-[140px]" />
+      </div>
+
       <div className="mx-auto max-w-3xl">
         <div className="mb-16 text-center">
-          <h2 className="text-3xl font-bold sm:text-4xl">Simple pricing</h2>
-          <p className="mt-4 text-lg text-muted-foreground">
+          <h2 className="font-heading text-3xl font-semibold tracking-tight sm:text-4xl">Simple pricing</h2>
+          <p className="mt-4 text-lg text-[#71717A]">
             Start free. Upgrade when you&apos;re hooked.
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-2">
+        <div className="grid gap-6 md:grid-cols-2">
           {plans.map((plan) => (
             <div
               key={plan.name}
-              className={`flex flex-col rounded-2xl border p-8 ${
+              className={`relative flex flex-col overflow-hidden rounded-2xl border p-8 transition-all duration-300 ${
                 plan.highlight
-                  ? "border-violet-600 ring-1 ring-violet-600"
-                  : "border-border"
+                  ? "border-primary/50 bg-[#161618] shadow-[0_4px_40px_rgba(0,0,0,0.4),0_0_80px_rgba(185,81,38,0.08)]"
+                  : "border-[#1a1a1f] bg-[#161618] shadow-[0_2px_20px_rgba(0,0,0,0.3)] hover:border-[#2A2A30]"
               }`}
             >
-              <div className="mb-6">
-                <h3 className="text-xl font-bold">{plan.name}</h3>
+              {/* Warm glow on Pro card */}
+              {plan.highlight && (
+                <>
+                  <div className="pointer-events-none absolute -top-20 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-[#B95126]/[0.12] blur-[80px]" />
+                  <span className="absolute right-4 top-4 rounded-full bg-primary/15 px-3 py-1 text-xs font-semibold text-primary">
+                    Most Popular
+                  </span>
+                </>
+              )}
+
+              <div className="relative mb-6">
+                <h3 className="font-heading text-xl font-bold">{plan.name}</h3>
                 <div className="mt-2 flex items-baseline gap-1">
-                  <span className="text-4xl font-bold">{plan.price}</span>
-                  <span className="text-muted-foreground">{plan.period}</span>
+                  <span className="font-heading text-4xl font-bold">{plan.price}</span>
+                  <span className="text-[#71717A]">{plan.period}</span>
                 </div>
               </div>
 
-              <ul className="mb-8 flex-1 space-y-3">
+              <ul className="relative mb-8 flex-1 space-y-3">
                 {plan.features.map((feature) => (
                   <li
-                    key={feature}
-                    className="flex items-center gap-2 text-sm"
+                    key={feature.text}
+                    className="flex items-center gap-2.5 text-sm text-[#A0A0A8]"
                   >
-                    <Check className="h-4 w-4 shrink-0 text-green-500" />
-                    {feature}
+                    {feature.neutral ? (
+                      <Info className="h-4 w-4 shrink-0 text-[#A0A0A8]" />
+                    ) : (
+                      <Check className="h-4 w-4 shrink-0 text-[#57C5B6]" />
+                    )}
+                    {feature.text}
                   </li>
                 ))}
               </ul>
 
               <Link
                 href={plan.href}
-                className={`flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-semibold transition-colors ${
+                className={`relative flex items-center justify-center gap-2 rounded-lg px-6 py-3 text-sm font-semibold transition-all duration-200 ${
                   plan.highlight
-                    ? "bg-gradient-to-r from-violet-600 to-blue-600 text-white hover:from-violet-700 hover:to-blue-700"
-                    : "border border-border bg-card text-foreground hover:bg-accent"
+                    ? "bg-primary text-white shadow-[0_0_24px_rgba(185,81,38,0.2)] hover:shadow-[0_0_36px_rgba(185,81,38,0.3)] hover:bg-primary/90"
+                    : "border border-[#2A2A30] bg-[#1E1E24] text-foreground hover:bg-[#2A2A30]"
                 }`}
               >
                 {plan.highlight && <Zap className="h-4 w-4" />}

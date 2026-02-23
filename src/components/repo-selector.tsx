@@ -9,9 +9,25 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Check, GitBranch, Loader2, Search } from "lucide-react";
+import { Check, GitBranch, Globe, Loader2, Lock, Search } from "lucide-react";
 import { toast } from "sonner";
 import { Id } from "../../convex/_generated/dataModel";
+
+function formatRelativeDate(dateStr: string): string {
+  const now = Date.now();
+  const then = new Date(dateStr).getTime();
+  const diffMs = now - then;
+  const diffMins = Math.floor(diffMs / 60_000);
+  if (diffMins < 1) return "just now";
+  if (diffMins < 60) return `${diffMins}m ago`;
+  const diffHours = Math.floor(diffMins / 60);
+  if (diffHours < 24) return `${diffHours}h ago`;
+  const diffDays = Math.floor(diffHours / 24);
+  if (diffDays < 30) return `${diffDays}d ago`;
+  const diffMonths = Math.floor(diffDays / 30);
+  if (diffMonths < 12) return `${diffMonths}mo ago`;
+  return `${Math.floor(diffMonths / 12)}y ago`;
+}
 
 export function RepoSelector() {
   const [search, setSearch] = useState("");
@@ -113,20 +129,43 @@ export function RepoSelector() {
           {filteredRepos?.map((repo: any) => (
             <Card
               key={repo._id}
-              className={`flex cursor-pointer items-center justify-between p-4 transition-colors hover:bg-accent ${
-                repo.isActive ? "border-violet-600 bg-accent" : ""
+              className={`flex cursor-pointer items-center justify-between p-4 transition-all duration-200 ${
+                repo.isActive
+                  ? "border-primary/50 bg-[#B95126]/[0.06] shadow-[0_0_20px_rgba(185,81,38,0.06)]"
+                  : "border-[#1a1a1f] bg-[#161618] shadow-[0_1px_10px_rgba(0,0,0,0.2)] hover:border-[#2A2A30] hover:bg-[#1E1E24]"
               }`}
               onClick={() => handleSelect(repo._id)}
             >
               <div className="flex items-center gap-3">
                 <GitBranch className="h-5 w-5 text-muted-foreground" />
                 <div>
-                  <div className="font-medium">{repo.name}</div>
-                  {repo.description && (
-                    <div className="text-sm text-muted-foreground">
-                      {repo.description}
-                    </div>
-                  )}
+                  <div className="flex items-center gap-2">
+                    <span className="font-mono text-sm font-medium">{repo.name}</span>
+                    {repo.isPrivate ? (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-[#2A2A30] bg-[#1a1a1f] px-2 py-0.5 text-[11px] text-muted-foreground">
+                        <Lock className="h-3 w-3" />
+                        Private
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1 rounded-full border border-[#2A2A30] bg-[#1a1a1f] px-2 py-0.5 text-[11px] text-muted-foreground">
+                        <Globe className="h-3 w-3" />
+                        Public
+                      </span>
+                    )}
+                  </div>
+                  <div className="mt-0.5 flex items-center gap-2 text-xs text-muted-foreground">
+                    {repo.description && (
+                      <span className="truncate max-w-[280px]">{repo.description}</span>
+                    )}
+                    {repo.description && repo.pushedAt && (
+                      <span className="text-[#2A2A30]">·</span>
+                    )}
+                    {repo.pushedAt && (
+                      <span className="whitespace-nowrap shrink-0">
+                        Pushed {formatRelativeDate(repo.pushedAt)}
+                      </span>
+                    )}
+                  </div>
                 </div>
               </div>
               <div className="flex items-center gap-2">
@@ -136,7 +175,7 @@ export function RepoSelector() {
                   </Badge>
                 )}
                 {repo.isActive && (
-                  <Check className="h-5 w-5 text-violet-500" />
+                  <Check className="h-5 w-5 text-primary" />
                 )}
               </div>
             </Card>

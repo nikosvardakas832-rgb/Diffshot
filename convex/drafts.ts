@@ -88,6 +88,40 @@ export const getUserDrafts = query({
   },
 });
 
+export const getPublishedCountThisMonth = query({
+  args: { userId: v.id("users"), repoId: v.optional(v.id("repos")) },
+  handler: async (ctx, args) => {
+    const now = new Date();
+    const startOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).getTime();
+
+    let drafts;
+    if (args.repoId) {
+      drafts = await ctx.db
+        .query("drafts")
+        .withIndex("by_repo", (q) => q.eq("repoId", args.repoId!))
+        .collect();
+      drafts = drafts.filter(
+        (d) =>
+          d.userId === args.userId &&
+          d.status === "published" &&
+          (d.publishedAt ?? d.createdAt) >= startOfMonth
+      );
+    } else {
+      drafts = await ctx.db
+        .query("drafts")
+        .withIndex("by_status", (q) =>
+          q.eq("userId", args.userId).eq("status", "published")
+        )
+        .collect();
+      drafts = drafts.filter(
+        (d) => (d.publishedAt ?? d.createdAt) >= startOfMonth
+      );
+    }
+
+    return drafts.length;
+  },
+});
+
 export const getDraftsByScan = query({
   args: { scanId: v.id("scans") },
   handler: async (ctx, args) => {
@@ -103,11 +137,13 @@ export const updateDraft = mutation({
     draftId: v.id("drafts"),
     hook: v.optional(v.string()),
     body: v.optional(v.string()),
+    category: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const updates: Record<string, string> = {};
     if (args.hook !== undefined) updates.hook = args.hook;
     if (args.body !== undefined) updates.body = args.body;
+    if (args.category !== undefined) updates.category = args.category;
 
     await ctx.db.patch(args.draftId, updates);
   },

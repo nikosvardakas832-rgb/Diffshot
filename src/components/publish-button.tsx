@@ -39,7 +39,8 @@ export function PublishButton({ draftId }: { draftId: Id<"drafts"> }) {
     setPublishing(true);
     try {
       // Generate and upload the visual asset if not already stored
-      const ogResponse = await fetch(`/api/og/${draftId}?watermark=false`);
+      const watermark = user.tier === "pro" ? "false" : "true";
+      const ogResponse = await fetch(`/api/og/${draftId}?watermark=${watermark}`);
       if (ogResponse.ok) {
         const imageBlob = await ogResponse.blob();
         const uploadUrl = await generateUploadUrl();
@@ -66,7 +67,7 @@ export function PublishButton({ draftId }: { draftId: Id<"drafts"> }) {
             href={result.tweetUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="text-xs text-blue-400 underline"
+            className="text-xs text-[#57C5B6] underline"
           >
             View tweet
           </a>

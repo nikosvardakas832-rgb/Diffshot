@@ -91,6 +91,20 @@ export async function GET(request: NextRequest) {
 
   const tokenData = await tokenResponse.json();
 
+  // Fetch the user's Twitter profile to get their username
+  let twitterUsername: string | undefined;
+  try {
+    const meResponse = await fetch("https://api.twitter.com/2/users/me", {
+      headers: { Authorization: `Bearer ${tokenData.access_token}` },
+    });
+    if (meResponse.ok) {
+      const meData = await meResponse.json();
+      twitterUsername = meData.data?.username;
+    }
+  } catch {
+    // Non-critical — we'll just skip storing the username
+  }
+
   // Get Convex user and store tokens
   const user = await getConvex().query(api.users.getUserByClerkId, {
     clerkId: userId,
@@ -110,6 +124,7 @@ export async function GET(request: NextRequest) {
     twitterAccessToken: tokenData.access_token,
     twitterRefreshToken: tokenData.refresh_token,
     twitterTokenExpiresAt: Date.now() + tokenData.expires_in * 1000,
+    twitterUsername,
   });
 
   // Clean up cookies

@@ -42,7 +42,16 @@ export default function DashboardLayout({
   return (
     <div className="flex h-screen overflow-hidden bg-background">
       <Sidebar />
-      <main className="flex-1 overflow-y-auto p-8">{children}</main>
+      <main className="relative flex-1 overflow-y-auto">
+        {/* Ambient warm glow — bottom center */}
+        <div className="pointer-events-none fixed bottom-0 left-60 right-0 z-0 h-[500px]">
+          <div className="absolute bottom-[-200px] left-1/2 h-[600px] w-[900px] -translate-x-1/2 rounded-full bg-[#B95126]/[0.07] blur-[160px]" />
+        </div>
+        {/* Top inner shadow for depth against sidebar */}
+        <div className="pointer-events-none sticky top-0 z-10 h-px w-full shadow-[0_1px_20px_rgba(0,0,0,0.5)]" />
+        {/* Content */}
+        <div className="relative z-[1] px-10 py-10">{children}</div>
+      </main>
     </div>
   );
 }

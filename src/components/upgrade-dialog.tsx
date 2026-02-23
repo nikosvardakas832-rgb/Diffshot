@@ -26,14 +26,14 @@ const plans = [
       "All 3 visual card types",
       "Watermarked cards",
     ],
-    notIncluded: ["100 generations per month", "Clean cards"],
+    notIncluded: ["50 generations per month", "Clean cards"],
   },
   {
     name: "Pro",
-    price: "$14",
+    price: "$9",
     period: "/month",
     features: [
-      "100 generations per month",
+      "50 generations per month",
       "Unlimited repos",
       "All 3 visual card types",
       "Clean cards (no watermark)",
@@ -90,8 +90,8 @@ export function UpgradeDialog({ open, onOpenChange }: UpgradeDialogProps) {
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="sm:max-w-2xl">
         <DialogHeader>
-          <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-violet-600/10">
-            <Zap className="h-6 w-6 text-violet-500" />
+          <div className="mx-auto mb-2 flex h-12 w-12 items-center justify-center rounded-full bg-primary/10">
+            <Zap className="h-6 w-6 text-primary" />
           </div>
           <DialogTitle className="text-center text-xl">
             Upgrade to Pro
@@ -107,7 +107,7 @@ export function UpgradeDialog({ open, onOpenChange }: UpgradeDialogProps) {
               key={plan.name}
               className={`flex flex-col rounded-lg border p-4 ${
                 plan.name === "Pro"
-                  ? "border-violet-600 ring-1 ring-violet-600"
+                  ? "border-primary ring-1 ring-primary"
                   : "border-border"
               }`}
             >
@@ -115,7 +115,7 @@ export function UpgradeDialog({ open, onOpenChange }: UpgradeDialogProps) {
                 <div className="flex items-center gap-2">
                   <h3 className="text-lg font-bold">{plan.name}</h3>
                   {plan.name === "Pro" && (
-                    <Badge className="bg-violet-600 text-white">Popular</Badge>
+                    <Badge className="bg-primary text-white">Popular</Badge>
                   )}
                 </div>
                 <div className="mt-1 flex items-baseline gap-1">
@@ -127,7 +127,7 @@ export function UpgradeDialog({ open, onOpenChange }: UpgradeDialogProps) {
               <ul className="mb-4 flex-1 space-y-2">
                 {plan.features.map((feature) => (
                   <li key={feature} className="flex items-center gap-2 text-sm">
-                    <Check className="h-4 w-4 shrink-0 text-green-500" />
+                    <Check className="h-4 w-4 shrink-0 text-[#57C5B6]" />
                     {feature}
                   </li>
                 ))}
@@ -146,7 +146,7 @@ export function UpgradeDialog({ open, onOpenChange }: UpgradeDialogProps) {
                 <Button
                   onClick={handleUpgrade}
                   disabled={!clerkId || loading}
-                  className="w-full gap-2 bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700"
+                  className="w-full gap-2"
                 >
                   <Zap className="h-4 w-4" />
                   {loading ? "Loading..." : "Upgrade Now"}

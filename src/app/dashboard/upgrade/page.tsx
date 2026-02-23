@@ -74,10 +74,10 @@ export default function UpgradePage() {
   };
 
   return (
-    <div className="mx-auto max-w-3xl space-y-8">
+    <div className="mx-auto max-w-3xl space-y-10">
       <div className="text-center">
-        <h1 className="text-3xl font-bold">Upgrade to Pro</h1>
-        <p className="mt-2 text-muted-foreground">
+        <h1 className="font-heading text-[32px] font-semibold tracking-tight">Upgrade to Pro</h1>
+        <p className="mt-2 text-[#71717A]">
           Ship more, share more, grow faster.
         </p>
       </div>
@@ -85,8 +85,8 @@ export default function UpgradePage() {
       {/* Recent unpublished commits teaser */}
       {user?.tier === "free" &&
         user.generationsUsedThisMonth >= 3 && (
-          <div className="rounded-xl border border-yellow-500/20 bg-yellow-500/5 p-4 text-center">
-            <p className="text-sm text-yellow-400">
+          <div className="rounded-xl border border-primary/20 bg-[#B95126]/[0.06] p-4 text-center shadow-[0_0_30px_rgba(185,81,38,0.06)]">
+            <p className="text-sm text-primary">
               You&apos;ve used all 3 free generations this month. Upgrade to
               keep shipping visual changelogs.
             </p>
@@ -97,29 +97,34 @@ export default function UpgradePage() {
         {plans.map((plan) => (
           <Card
             key={plan.name}
-            className={`flex flex-col p-6 ${
+            className={`relative flex flex-col overflow-hidden p-6 ${
               plan.name === "Pro"
-                ? "border-violet-600 ring-1 ring-violet-600"
-                : ""
+                ? "border-primary/50 bg-[#161618] shadow-[0_4px_40px_rgba(0,0,0,0.4),0_0_80px_rgba(185,81,38,0.08)]"
+                : "border-[#1a1a1f] bg-[#161618] shadow-[0_2px_20px_rgba(0,0,0,0.3)]"
             }`}
           >
-            <div className="mb-6">
+            {/* Warm glow on Pro card */}
+            {plan.name === "Pro" && (
+              <div className="pointer-events-none absolute -top-20 left-1/2 h-40 w-40 -translate-x-1/2 rounded-full bg-[#B95126]/[0.12] blur-[80px]" />
+            )}
+
+            <div className="relative mb-6">
               <div className="flex items-center gap-2">
-                <h2 className="text-xl font-bold">{plan.name}</h2>
+                <h2 className="font-heading text-xl font-bold">{plan.name}</h2>
                 {plan.name === "Pro" && (
-                  <Badge className="bg-violet-600 text-white">Popular</Badge>
+                  <Badge className="bg-primary text-white">Popular</Badge>
                 )}
               </div>
               <div className="mt-2 flex items-baseline gap-1">
-                <span className="text-4xl font-bold">{plan.price}</span>
-                <span className="text-muted-foreground">{plan.period}</span>
+                <span className="font-heading text-4xl font-bold">{plan.price}</span>
+                <span className="text-[#71717A]">{plan.period}</span>
               </div>
             </div>
 
             <ul className="mb-8 flex-1 space-y-3">
               {plan.features.map((feature) => (
                 <li key={feature} className="flex items-center gap-2 text-sm">
-                  <Check className="h-4 w-4 shrink-0 text-green-500" />
+                  <Check className="h-4 w-4 shrink-0 text-[#57C5B6]" />
                   {feature}
                 </li>
               ))}
@@ -138,7 +143,7 @@ export default function UpgradePage() {
               <Button
                 onClick={handleUpgrade}
                 disabled={!clerkId || loading || user?.tier === "pro"}
-                className="w-full gap-2 bg-gradient-to-r from-violet-600 to-blue-600 hover:from-violet-700 hover:to-blue-700"
+                className="w-full gap-2"
               >
                 <Zap className="h-4 w-4" />
                 {user?.tier === "pro"

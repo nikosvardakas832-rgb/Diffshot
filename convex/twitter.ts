@@ -59,6 +59,35 @@ export const refreshTokenIfNeeded = action({
   },
 });
 
+export const fetchTwitterUsername = action({
+  args: { userId: v.id("users") },
+  handler: async (ctx, args) => {
+    const accessToken = await ctx.runAction(api.twitter.refreshTokenIfNeeded, {
+      userId: args.userId,
+    });
+
+    const response = await fetch(`${TWITTER_API}/users/me`, {
+      headers: { Authorization: `Bearer ${accessToken}` },
+    });
+
+    if (!response.ok) {
+      throw new Error(`Failed to fetch Twitter profile: ${await response.text()}`);
+    }
+
+    const data = await response.json();
+    const username = data.data?.username;
+
+    if (username) {
+      await ctx.runMutation(api.users.storeTwitterUsername, {
+        userId: args.userId,
+        twitterUsername: username,
+      });
+    }
+
+    return username as string | undefined;
+  },
+});
+
 export const publishTweet = action({
   args: {
     userId: v.id("users"),

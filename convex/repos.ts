@@ -33,6 +33,7 @@ export const upsertRepo = mutation({
     description: v.optional(v.string()),
     language: v.optional(v.string()),
     pushedAt: v.string(),
+    isPrivate: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
     const existing = await ctx.db
@@ -49,6 +50,7 @@ export const upsertRepo = mutation({
         description: args.description,
         language: args.language,
         pushedAt: args.pushedAt,
+        isPrivate: args.isPrivate,
       });
       return match._id;
     }

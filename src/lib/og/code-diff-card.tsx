@@ -23,11 +23,10 @@ export function CodeDiffCard({ data }: { data: CodeDiffData }) {
         }}
       >
         <span style={{ color: "#58a6ff" }}>{data.filename}</span>
-        <span style={{ color: "#484f58" }}>({data.language})</span>
       </div>
 
       {/* Diff panels */}
-      <div style={{ display: "flex", gap: 16 }}>
+      <div style={{ display: "flex", gap: 12 }}>
         {/* Before */}
         <div
           style={{
@@ -57,13 +56,13 @@ export function CodeDiffCard({ data }: { data: CodeDiffData }) {
               key={i}
               style={{
                 fontFamily: "JetBrains Mono",
-                fontSize: 14,
+                fontSize: 13,
                 lineHeight: 1.6,
                 color: "#f0883e",
                 display: "flex",
               }}
             >
-              <span style={{ color: "#484f58", marginRight: 12, minWidth: 20 }}>
+              <span style={{ color: "#484f58", marginRight: 20, minWidth: 20 }}>
                 {i + 1}
               </span>
               <span style={{ color: "#e6edf3" }}>{line}</span>
@@ -77,16 +76,19 @@ export function CodeDiffCard({ data }: { data: CodeDiffData }) {
             flex: 1,
             display: "flex",
             flexDirection: "column",
-            backgroundColor: "#0d1f0d",
+            backgroundColor: "rgba(87, 197, 182, 0.10)",
             borderRadius: 12,
             padding: 20,
-            border: "1px solid #1f3d1f",
+            borderLeft: "3px solid #57C5B6",
+            borderTop: "1px solid rgba(87, 197, 182, 0.20)",
+            borderRight: "1px solid rgba(87, 197, 182, 0.20)",
+            borderBottom: "1px solid rgba(87, 197, 182, 0.20)",
           }}
         >
           <span
             style={{
               fontSize: 12,
-              color: "#3fb950",
+              color: "#57C5B6",
               fontWeight: 700,
               marginBottom: 12,
               textTransform: "uppercase",
@@ -100,15 +102,15 @@ export function CodeDiffCard({ data }: { data: CodeDiffData }) {
               key={i}
               style={{
                 fontFamily: "JetBrains Mono",
-                fontSize: 14,
+                fontSize: 13,
                 lineHeight: 1.6,
                 display: "flex",
               }}
             >
-              <span style={{ color: "#484f58", marginRight: 12, minWidth: 20 }}>
+              <span style={{ color: "#484f58", marginRight: 20, minWidth: 20 }}>
                 {i + 1}
               </span>
-              <span style={{ color: "#e6edf3" }}>{line}</span>
+              <span style={{ color: "#57C5B6" }}>{line}</span>
             </div>
           ))}
         </div>

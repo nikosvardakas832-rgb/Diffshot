@@ -12,6 +12,7 @@ import { ArrowLeft, Save } from "lucide-react";
 import { Id } from "../../../../../convex/_generated/dataModel";
 import Link from "next/link";
 import { toast } from "sonner";
+import { stripHookFromBody } from "@/lib/strip-hook-from-body";
 
 export default function DraftEditorPage({
   params,
@@ -27,7 +28,7 @@ export default function DraftEditorPage({
   const [body, setBody] = useState<string | null>(null);
 
   const currentHook = hook ?? draft?.hook ?? "";
-  const currentBody = body ?? draft?.body ?? "";
+  const currentBody = body ?? (draft ? stripHookFromBody(draft.hook, draft.body) : "");
   const hasChanges =
     (hook !== null && hook !== draft?.hook) ||
     (body !== null && body !== draft?.body);
@@ -52,7 +53,7 @@ export default function DraftEditorPage({
   }
 
   return (
-    <div className="mx-auto max-w-4xl space-y-6">
+    <div className="mx-auto max-w-4xl space-y-8">
       {/* Header */}
       <div className="flex items-center gap-4">
         <Button variant="ghost" size="sm" asChild>
@@ -61,7 +62,7 @@ export default function DraftEditorPage({
             Back
           </Link>
         </Button>
-        <h1 className="text-2xl font-bold">Edit Draft</h1>
+        <h1 className="font-heading text-[32px] font-semibold tracking-tight">Edit Draft</h1>
       </div>
 
       <div className="grid gap-8 lg:grid-cols-2">
@@ -88,6 +89,14 @@ export default function DraftEditorPage({
               placeholder="Tweet body..."
               rows={6}
             />
+            {(() => {
+              const total = `${currentHook}\n\n${currentBody}`.length;
+              return (
+                <span className={`text-xs font-mono ${total >= 250 ? "text-destructive font-medium" : total >= 220 ? "text-primary font-medium" : "text-muted-foreground"}`}>
+                  {total}/280
+                </span>
+              );
+            })()}
           </div>
 
           <div className="flex items-center gap-3">

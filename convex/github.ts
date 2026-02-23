@@ -71,6 +71,7 @@ export const listRepos = action({
         description: repo.description ?? undefined,
         language: repo.language ?? undefined,
         pushedAt: repo.pushed_at,
+        isPrivate: repo.private ?? false,
       });
     }
 

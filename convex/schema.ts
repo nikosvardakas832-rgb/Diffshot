@@ -11,11 +11,13 @@ export default defineSchema({
     twitterAccessToken: v.optional(v.string()),
     twitterRefreshToken: v.optional(v.string()),
     twitterTokenExpiresAt: v.optional(v.number()),
+    twitterUsername: v.optional(v.string()),
     tier: v.union(v.literal("free"), v.literal("pro")),
     generationsUsedThisMonth: v.number(),
     generationResetDate: v.number(),
     polarCustomerId: v.optional(v.string()),
     polarSubscriptionId: v.optional(v.string()),
+    subscriptionCurrentPeriodEnd: v.optional(v.number()),
     createdAt: v.number(),
   })
     .index("by_clerk_id", ["clerkId"])
@@ -29,6 +31,7 @@ export default defineSchema({
     description: v.optional(v.string()),
     language: v.optional(v.string()),
     pushedAt: v.string(),
+    isPrivate: v.optional(v.boolean()),
     lastScannedAt: v.optional(v.number()),
     isActive: v.boolean(),
     createdAt: v.number(),

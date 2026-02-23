@@ -7,14 +7,30 @@ export const upgradeUser = mutation({
     userId: v.id("users"),
     polarCustomerId: v.string(),
     polarSubscriptionId: v.string(),
+    subscriptionCurrentPeriodEnd: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
+    const user = await ctx.db.get(args.userId);
+    const isNewUpgrade = user?.tier !== "pro";
+    const isNewBillingPeriod =
+      args.subscriptionCurrentPeriodEnd &&
+      user?.subscriptionCurrentPeriodEnd &&
+      args.subscriptionCurrentPeriodEnd !== user.subscriptionCurrentPeriodEnd;
+
+    // Reset counter on fresh upgrade or new billing period (renewal)
+    const shouldResetCounter = isNewUpgrade || isNewBillingPeriod;
+
     await ctx.db.patch(args.userId, {
       tier: "pro",
       polarCustomerId: args.polarCustomerId,
       polarSubscriptionId: args.polarSubscriptionId,
-      generationsUsedThisMonth: 0,
-      generationResetDate: Date.now(),
+      ...(shouldResetCounter && {
+        generationsUsedThisMonth: 0,
+        generationResetDate: Date.now(),
+      }),
+      ...(args.subscriptionCurrentPeriodEnd && {
+        subscriptionCurrentPeriodEnd: args.subscriptionCurrentPeriodEnd,
+      }),
     });
   },
 });

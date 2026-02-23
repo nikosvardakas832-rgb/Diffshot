@@ -25,10 +25,22 @@ export const POST = Webhooks({
       return;
     }
 
+    // Derive billing period end: use currentPeriodEnd if available,
+    // otherwise calculate from currentPeriodStart + 1 month
+    let periodEnd: number | undefined;
+    if (subscription.currentPeriodEnd) {
+      periodEnd = new Date(subscription.currentPeriodEnd).getTime();
+    } else if (subscription.currentPeriodStart) {
+      const start = new Date(subscription.currentPeriodStart);
+      const end = new Date(start.getFullYear(), start.getMonth() + 1, start.getDate());
+      periodEnd = end.getTime();
+    }
+
     await convex.mutation(api.polar.upgradeUser, {
       userId: user._id,
       polarCustomerId: subscription.customerId,
       polarSubscriptionId: subscription.id,
+      subscriptionCurrentPeriodEnd: periodEnd,
     });
   },
   onSubscriptionCanceled: async (payload) => {

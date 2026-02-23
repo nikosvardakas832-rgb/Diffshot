@@ -1,6 +1,7 @@
 "use client";
 
 import { ClerkProvider, useAuth } from "@clerk/nextjs";
+import { dark } from "@clerk/themes";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { ConvexReactClient } from "convex/react";
 import { ReactNode } from "react";
@@ -14,7 +15,14 @@ const convex = new ConvexReactClient(convexUrl);
 
 export function ConvexClerkProvider({ children }: { children: ReactNode }) {
   return (
-    <ClerkProvider>
+    <ClerkProvider
+      appearance={{ baseTheme: dark }}
+      signInUrl="/sign-in"
+      signUpUrl="/sign-up"
+      signInFallbackRedirectUrl="/dashboard"
+      signUpFallbackRedirectUrl="/dashboard/connect"
+      afterSignOutUrl="/"
+    >
       <ConvexProviderWithClerk client={convex} useAuth={useAuth}>
         {children}
       </ConvexProviderWithClerk>

@@ -8,7 +8,7 @@ import { api } from "./_generated/api";
 
 const GENERATION_LIMITS: Record<string, number> = {
   free: 3,
-  pro: 100,
+  pro: 50,
 };
 
 export const generateDrafts = action({
@@ -29,7 +29,7 @@ export const generateDrafts = action({
     const limit = GENERATION_LIMITS[user.tier];
     if (user.generationsUsedThisMonth >= limit) {
       throw new Error(
-        "Generation limit reached. Upgrade to Pro for 100 generations per month."
+        "Generation limit reached. Upgrade to Pro for 50 generations per month."
       );
     }
 
@@ -87,7 +87,12 @@ ${commitSummary}
 Generate exactly 3 drafts. Each draft must have:
 1. hook: A punchy opener under 50 characters that grabs attention. No hashtags.
 2. body: The tweet body. Total tweet (hook + body) must be under 280 characters. Use line breaks for readability. No hashtags.
-3. category: One of "feature", "fix", "refactor", "performance", "docs"
+3. category: One of "new_feature", "bug_fix", "improvement", "performance", "ui_update" — assign using these strict rules:
+   - "new_feature": A capability that did not exist before (new page, new integration, new endpoint, new functionality)
+   - "bug_fix": Something was broken or failing and is now fixed
+   - "improvement": An existing feature made better, updated, or refined (pricing change, UX tweak, config update, refactor, dependency update)
+   - "performance": ONLY when there is a measurable speed, size, or efficiency gain (response time, bundle size, load time, memory usage). Must involve a quantifiable metric.
+   - "ui_update": Visual or layout changes with no functional difference (styling, colors, spacing, responsive fixes)
 4. visual_type: One of "code_diff", "feature_highlight", "stats" — pick the most compelling for each draft, try to vary them
 5. visual_data: Data for rendering the visual card:
    - For "code_diff": { "before": "2-5 lines of old code", "after": "2-5 lines of new code", "filename": "path/to/file.ext", "language": "typescript" }

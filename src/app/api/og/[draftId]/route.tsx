@@ -1,5 +1,7 @@
 import { ImageResponse } from "next/og";
 import { NextRequest } from "next/server";
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
 import { CardWrapper } from "@/lib/og/card-wrapper";
 import { CodeDiffCard } from "@/lib/og/code-diff-card";
 import { FeatureHighlightCard } from "@/lib/og/feature-highlight-card";
@@ -45,6 +47,10 @@ export async function GET(
       year: "numeric",
     });
 
+    const faviconPath = join(process.cwd(), "public", "favicon_final.png");
+    const faviconBuffer = await readFile(faviconPath);
+    const faviconSrc = `data:image/png;base64,${faviconBuffer.toString("base64")}`;
+
     let cardContent;
     switch (draft.visualType) {
       case "code_diff":
@@ -66,7 +72,7 @@ export async function GET(
 
     return new ImageResponse(
       (
-        <CardWrapper repoName={repoName} date={date} watermark={watermark}>
+        <CardWrapper repoName={repoName} date={date} watermark={watermark} faviconSrc={faviconSrc} category={draft.category}>
           {cardContent}
         </CardWrapper>
       ),
