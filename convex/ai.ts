@@ -3,6 +3,7 @@
 
 import Anthropic from "@anthropic-ai/sdk";
 import { v } from "convex/values";
+import { ConvexError } from "convex/values";
 import { action } from "./_generated/server";
 import { api } from "./_generated/api";
 
@@ -28,7 +29,7 @@ export const generateDrafts = action({
     // Check generation limits
     const limit = GENERATION_LIMITS[user.tier];
     if (user.generationsUsedThisMonth >= limit) {
-      throw new Error(
+      throw new ConvexError(
         "Generation limit reached. Upgrade to Pro for 50 generations per month."
       );
     }

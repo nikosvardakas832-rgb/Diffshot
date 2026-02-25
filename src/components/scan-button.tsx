@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Loader2, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { Id } from "../../convex/_generated/dataModel";
+import { ConvexError } from "convex/values";
 import { UpgradeDialog } from "./upgrade-dialog";
 
 const STALE_SCAN_MS = 2 * 60 * 1000; // 2 minutes
@@ -73,11 +74,13 @@ export function ScanButton({ repoId }: { repoId?: Id<"repos"> }) {
       }
     } catch (error) {
       // Re-sync GitHub token and retry on expired token
-      if (
-        error instanceof Error &&
-        error.message.includes("GITHUB_TOKEN_EXPIRED") &&
-        !retryAfterRefresh
-      ) {
+      const rawMessage =
+        error instanceof ConvexError
+          ? (error.data as string)
+          : error instanceof Error
+            ? error.message
+            : "";
+      if (rawMessage.includes("GITHUB_TOKEN_EXPIRED") && !retryAfterRefresh) {
         try {
           const res = await fetch("/api/sync-github-token");
           if (res.ok) {
@@ -105,15 +108,16 @@ export function ScanButton({ repoId }: { repoId?: Id<"repos"> }) {
           // Ignore update failure
         }
       }
-      if (
-        error instanceof Error &&
-        error.message.includes("Generation limit reached")
-      ) {
+      const errorMessage =
+        error instanceof ConvexError
+          ? (error.data as string)
+          : error instanceof Error
+            ? error.message
+            : "Scan failed. Please try again.";
+      if (errorMessage.includes("Generation limit reached")) {
         setShowUpgrade(true);
       } else {
-        toast.error(
-          error instanceof Error ? error.message : "Scan failed. Please try again."
-        );
+        toast.error(errorMessage);
       }
     } finally {
       setScanning(false);
