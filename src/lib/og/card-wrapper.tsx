@@ -67,18 +67,20 @@ export function CardWrapper({
             gap: 12,
           }}
         >
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            src={faviconSrc ?? ""}
-            alt=""
-            width={40}
-            height={40}
-            style={{
-              width: 40,
-              height: 40,
-              borderRadius: 8,
-            }}
-          />
+          {faviconSrc && (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img
+              src={faviconSrc}
+              alt=""
+              width={40}
+              height={40}
+              style={{
+                width: 40,
+                height: 40,
+                borderRadius: 8,
+              }}
+            />
+          )}
           <span
             style={{
               fontSize: 18,

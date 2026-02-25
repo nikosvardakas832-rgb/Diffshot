@@ -32,7 +32,12 @@ export const POST = Webhooks({
       periodEnd = new Date(subscription.currentPeriodEnd).getTime();
     } else if (subscription.currentPeriodStart) {
       const start = new Date(subscription.currentPeriodStart);
-      const end = new Date(start.getFullYear(), start.getMonth() + 1, start.getDate());
+      const end = new Date(start);
+      end.setMonth(end.getMonth() + 1);
+      // Clamp overflow (e.g. Jan 31 → Mar 3 becomes Feb 28)
+      if (end.getDate() !== start.getDate()) {
+        end.setDate(0);
+      }
       periodEnd = end.getTime();
     }
 

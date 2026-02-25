@@ -1,5 +1,7 @@
 "use client";
 
+export const dynamic = "force-dynamic";
+
 import { Sidebar } from "@/components/sidebar";
 import { useCurrentUser } from "@/hooks/use-current-user";
 import { useEffect, useRef } from "react";

@@ -206,11 +206,11 @@ export default function TermsPage() {
             </ul>
 
             <h3 className="mt-6 mb-3 font-heading text-lg font-medium text-[#FAFAFA]">
-              Pro Plan ($14/month)
+              Pro Plan ($9/month)
             </h3>
             <ul className="space-y-2.5 pl-5">
               {[
-                "100 visual changelog generations per month",
+                "50 visual changelog generations per month",
                 "Unlimited repository connections",
                 "All 3 visual card types",
                 "No watermark on generated visual cards",
@@ -598,7 +598,7 @@ export default function TermsPage() {
               </p>
               <p>
                 <span className="font-medium text-[#FAFAFA]">Operator:</span>{" "}
-                [Business Name — to be updated upon registration]
+                Nick Vardakas (Sole Proprietor)
               </p>
               <p>
                 <span className="font-medium text-[#FAFAFA]">Location:</span>{" "}

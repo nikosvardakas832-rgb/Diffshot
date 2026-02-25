@@ -36,6 +36,11 @@ export const upsertRepo = mutation({
     isPrivate: v.optional(v.boolean()),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Not authenticated");
+    const owner = await ctx.db.get(args.userId);
+    if (!owner || owner.clerkId !== identity.subject) throw new Error("Not authorized");
+
     const existing = await ctx.db
       .query("repos")
       .withIndex("by_user", (q) => q.eq("userId", args.userId))
@@ -86,6 +91,12 @@ export const selectRepo = mutation({
       if (repo.isActive) {
         await ctx.db.patch(repo._id, { isActive: false });
       }
+    }
+
+    // Verify the repo belongs to this user
+    const repo = await ctx.db.get(args.repoId);
+    if (!repo || repo.userId !== args.userId) {
+      throw new Error("Repo not found or not owned by user");
     }
 
     // Activate selected repo

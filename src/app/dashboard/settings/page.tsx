@@ -228,7 +228,7 @@ export default function SettingsPage() {
                     });
                     const data = await res.json();
                     if (data.url) {
-                      window.open(data.url, "_blank");
+                      window.open(data.url, "_blank", "noopener,noreferrer");
                     }
                   } catch (err) {
                     console.error("Failed to open customer portal:", err);

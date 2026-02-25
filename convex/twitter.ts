@@ -96,11 +96,12 @@ export const publishTweet = action({
     draftId: v.id("drafts"),
   },
   handler: async (ctx, args) => {
-    // Get draft
+    // Get draft and verify ownership
     const draft = await ctx.runQuery(api.drafts.getDraftById, {
       draftId: args.draftId,
     });
     if (!draft) throw new Error("Draft not found");
+    if (draft.userId !== args.userId) throw new Error("Not authorized");
 
     // Refresh token if needed
     const accessToken = await ctx.runAction(api.twitter.refreshTokenIfNeeded, {

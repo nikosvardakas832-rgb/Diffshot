@@ -11,7 +11,8 @@ export const upgradeUser = mutation({
   },
   handler: async (ctx, args) => {
     const user = await ctx.db.get(args.userId);
-    const isNewUpgrade = user?.tier !== "pro";
+    if (!user) return;
+    const isNewUpgrade = user.tier !== "pro";
     const isNewBillingPeriod =
       args.subscriptionCurrentPeriodEnd &&
       user?.subscriptionCurrentPeriodEnd &&

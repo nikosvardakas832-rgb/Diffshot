@@ -600,7 +600,7 @@ export default function PrivacyPage() {
               </p>
               <p>
                 <span className="font-medium text-[#FAFAFA]">Operator:</span>{" "}
-                [Business Name — to be updated upon registration]
+                Nick Vardakas (Sole Proprietor)
               </p>
               <p>
                 <span className="font-medium text-[#FAFAFA]">Location:</span>{" "}

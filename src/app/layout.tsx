@@ -19,8 +19,6 @@ const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
 });
 
-// All pages need runtime auth/data — skip static generation
-export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: {

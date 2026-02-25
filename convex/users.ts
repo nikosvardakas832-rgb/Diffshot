@@ -89,6 +89,11 @@ export const storeTwitterTokens = mutation({
     twitterUsername: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Not authenticated");
+    const user = await ctx.db.get(args.userId);
+    if (!user || user.clerkId !== identity.subject) throw new Error("Not authorized");
+
     const patch: Record<string, unknown> = {
       twitterAccessToken: args.twitterAccessToken,
       twitterRefreshToken: args.twitterRefreshToken,
@@ -107,6 +112,11 @@ export const storeTwitterUsername = mutation({
     twitterUsername: v.string(),
   },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Not authenticated");
+    const user = await ctx.db.get(args.userId);
+    if (!user || user.clerkId !== identity.subject) throw new Error("Not authorized");
+
     await ctx.db.patch(args.userId, {
       twitterUsername: args.twitterUsername,
     });

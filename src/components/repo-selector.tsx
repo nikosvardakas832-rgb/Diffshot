@@ -40,7 +40,7 @@ export function RepoSelector() {
   const listRepos = useAction(api.github.listRepos);
   const selectRepo = useMutation(api.repos.selectRepo);
 
-  const handleRefresh = async () => {
+  const handleRefresh = async (retryAfterRefresh = false) => {
     if (!clerkId) return;
     setLoading(true);
     try {
@@ -49,14 +49,15 @@ export function RepoSelector() {
     } catch (error) {
       if (
         error instanceof Error &&
-        error.message.includes("GITHUB_TOKEN_EXPIRED")
+        error.message.includes("GITHUB_TOKEN_EXPIRED") &&
+        !retryAfterRefresh
       ) {
         try {
           const res = await fetch("/api/sync-github-token");
           if (res.ok) {
             toast.info("GitHub token refreshed. Retrying...");
             setLoading(false);
-            return handleRefresh();
+            return handleRefresh(true);
           }
         } catch {
           // Fall through

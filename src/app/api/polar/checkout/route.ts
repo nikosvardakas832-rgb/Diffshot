@@ -13,16 +13,16 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  const { productId } = await req.json();
-
-  if (!productId) {
-    return NextResponse.json(
-      { error: "Missing productId" },
-      { status: 400 }
-    );
-  }
-
   try {
+    const body = await req.json();
+    const productId = body?.productId;
+    if (!productId) {
+      return NextResponse.json(
+        { error: "Missing productId" },
+        { status: 400 }
+      );
+    }
+
     const result = await polar.checkouts.create({
       products: [productId],
       successUrl: `${process.env.NEXT_PUBLIC_APP_URL}/dashboard/settings?upgraded=true`,

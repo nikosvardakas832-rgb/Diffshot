@@ -20,14 +20,14 @@ const plans = [
       "All 3 visual card types",
       "Watermarked cards",
     ],
-    notIncluded: ["100 generations per month", "Clean cards"],
+    notIncluded: ["50 generations per month", "Clean cards"],
   },
   {
     name: "Pro",
-    price: "$14",
+    price: "$9",
     period: "/month",
     features: [
-      "100 generations per month",
+      "50 generations per month",
       "Unlimited repos",
       "All 3 visual card types",
       "Clean cards (no watermark)",

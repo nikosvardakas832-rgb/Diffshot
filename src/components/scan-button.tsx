@@ -25,7 +25,7 @@ export function ScanButton({ repoId }: { repoId?: Id<"repos"> }) {
     repoId ? { repoId } : "skip"
   );
 
-  const handleScan = async () => {
+  const handleScan = async (retryAfterRefresh = false) => {
     if (!clerkId || !repoId) return;
 
     // Reset any stuck or failed scan before starting
@@ -75,14 +75,15 @@ export function ScanButton({ repoId }: { repoId?: Id<"repos"> }) {
       // Re-sync GitHub token and retry on expired token
       if (
         error instanceof Error &&
-        error.message.includes("GITHUB_TOKEN_EXPIRED")
+        error.message.includes("GITHUB_TOKEN_EXPIRED") &&
+        !retryAfterRefresh
       ) {
         try {
           const res = await fetch("/api/sync-github-token");
           if (res.ok) {
             toast.info("GitHub token refreshed. Retrying...");
             setScanning(false);
-            return handleScan();
+            return handleScan(true);
           }
         } catch {
           // Fall through to error handling

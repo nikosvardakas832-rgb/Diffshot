@@ -186,6 +186,7 @@ export const markPublished = mutation({
     tweetUrl: v.string(),
   },
   handler: async (ctx, args) => {
+    await verifyDraftOwnership(ctx, args.draftId);
     await ctx.db.patch(args.draftId, {
       status: "published",
       tweetId: args.tweetId,
