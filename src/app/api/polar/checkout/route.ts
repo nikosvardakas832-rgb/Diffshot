@@ -4,7 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 const polar = new Polar({
   accessToken: process.env.POLAR_ACCESS_TOKEN!,
-  server: "sandbox",
 });
 
 export async function POST(req: NextRequest) {

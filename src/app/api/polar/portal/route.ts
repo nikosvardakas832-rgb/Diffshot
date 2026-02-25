@@ -6,7 +6,6 @@ import { api } from "../../../../../convex/_generated/api";
 
 const polar = new Polar({
   accessToken: process.env.POLAR_ACCESS_TOKEN!,
-  server: "sandbox",
 });
 
 function getConvex() {

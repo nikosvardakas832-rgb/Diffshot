@@ -27,7 +27,7 @@ export const metadata: Metadata = {
   },
   description:
     "Auto-generate visual changelog tweets from your GitHub commits. Ship code, share progress, grow your audience.",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://diffshot.com"),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://diffshot.app"),
   openGraph: {
     title: "Diffshot — Turn Your Code Into Customers",
     description:

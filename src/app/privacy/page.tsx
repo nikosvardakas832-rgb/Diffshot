@@ -75,7 +75,7 @@ export default function PrivacyPage() {
             <p className="font-sans text-sm leading-[1.7] text-[#A0A0A8]">
               <span className="font-medium text-[#FAFAFA]">Diffshot</span>{" "}
               (&ldquo;we,&rdquo; &ldquo;us,&rdquo; or &ldquo;our&rdquo;)
-              operates the Diffshot application and website at diffshot.com.
+              operates the Diffshot application and website at diffshot.app.
               This Privacy Policy explains how we collect, use, and protect your
               information when you use our service.
             </p>
@@ -475,10 +475,10 @@ export default function PrivacyPage() {
             <p className="mt-4 font-sans text-sm leading-[1.7] text-[#A0A0A8]">
               To exercise any of these rights, contact us at{" "}
               <a
-                href="mailto:legal@diffshot.com"
+                href="mailto:legal@diffshot.app"
                 className="text-[#57C5B6] hover:underline"
               >
-                legal@diffshot.com
+                legal@diffshot.app
               </a>
               .
             </p>
@@ -551,10 +551,10 @@ export default function PrivacyPage() {
                   </span>{" "}
                   Contact us at{" "}
                   <a
-                    href="mailto:legal@diffshot.com"
+                    href="mailto:legal@diffshot.app"
                     className="text-[#57C5B6] hover:underline"
                   >
-                    legal@diffshot.com
+                    legal@diffshot.app
                   </a>{" "}
                   or use the account settings page
                 </span>
@@ -592,10 +592,10 @@ export default function PrivacyPage() {
               <p>
                 <span className="font-medium text-[#FAFAFA]">Email:</span>{" "}
                 <a
-                  href="mailto:legal@diffshot.com"
+                  href="mailto:legal@diffshot.app"
                   className="text-[#57C5B6] hover:underline"
                 >
-                  legal@diffshot.com
+                  legal@diffshot.app
                 </a>
               </p>
               <p>

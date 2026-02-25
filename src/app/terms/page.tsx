@@ -79,7 +79,7 @@ export default function TermsPage() {
           <div className="mb-6 rounded-xl border border-[#2A2A30] bg-[#1E1E24] p-8">
             <p className="font-sans text-sm leading-[1.7] text-[#A0A0A8]">
               These Terms &amp; Conditions (&ldquo;Terms&rdquo;) govern your use
-              of the Diffshot application and website at diffshot.com
+              of the Diffshot application and website at diffshot.app
               (&ldquo;Service&rdquo;), operated by [Business Name — to be
               updated upon registration] (&ldquo;we,&rdquo; &ldquo;us,&rdquo;
               or &ldquo;our&rdquo;), based in Thessaloniki, Greece.
@@ -492,10 +492,10 @@ export default function TermsPage() {
                   You may delete your account at any time via account settings or
                   by contacting{" "}
                   <a
-                    href="mailto:legal@diffshot.com"
+                    href="mailto:legal@diffshot.app"
                     className="text-[#57C5B6] hover:underline"
                   >
-                    legal@diffshot.com
+                    legal@diffshot.app
                   </a>
                 </span>
               </li>
@@ -590,10 +590,10 @@ export default function TermsPage() {
               <p>
                 <span className="font-medium text-[#FAFAFA]">Email:</span>{" "}
                 <a
-                  href="mailto:legal@diffshot.com"
+                  href="mailto:legal@diffshot.app"
                   className="text-[#57C5B6] hover:underline"
                 >
-                  legal@diffshot.com
+                  legal@diffshot.app
                 </a>
               </p>
               <p>
