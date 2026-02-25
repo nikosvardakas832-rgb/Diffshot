@@ -43,6 +43,10 @@ export const metadata: Metadata = {
       "Auto-generate visual changelog tweets from your GitHub commits. Ship code, share progress, grow your audience.",
     images: ["/Diffshot_Final_Logo.png"],
   },
+  icons: {
+    icon: "/favicon_final.png",
+    apple: "/favicon_final.png",
+  },
   robots: {
     index: true,
     follow: true,
