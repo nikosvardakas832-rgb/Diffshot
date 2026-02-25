@@ -23,9 +23,32 @@ const jetbrainsMono = JetBrains_Mono({
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Diffshot — Turn Your Code Into Customers",
+  title: {
+    default: "Diffshot — Turn Your Code Into Customers",
+    template: "%s | Diffshot",
+  },
   description:
     "Auto-generate visual changelog tweets from your GitHub commits. Ship code, share progress, grow your audience.",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://diffshot.com"),
+  openGraph: {
+    title: "Diffshot — Turn Your Code Into Customers",
+    description:
+      "Auto-generate visual changelog tweets from your GitHub commits. Ship code, share progress, grow your audience.",
+    siteName: "Diffshot",
+    type: "website",
+    images: ["/Diffshot_Final_Logo.png"],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Diffshot — Turn Your Code Into Customers",
+    description:
+      "Auto-generate visual changelog tweets from your GitHub commits. Ship code, share progress, grow your audience.",
+    images: ["/Diffshot_Final_Logo.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

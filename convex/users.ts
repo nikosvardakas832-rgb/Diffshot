@@ -158,6 +158,11 @@ export const incrementGenerations = mutation({
 export const disconnectGithub = mutation({
   args: { userId: v.id("users") },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Not authenticated");
+    const user = await ctx.db.get(args.userId);
+    if (!user || user.clerkId !== identity.subject) throw new Error("Not authorized");
+
     await ctx.db.patch(args.userId, {
       githubAccessToken: undefined,
     });
@@ -167,6 +172,11 @@ export const disconnectGithub = mutation({
 export const disconnectTwitter = mutation({
   args: { userId: v.id("users") },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Not authenticated");
+    const user = await ctx.db.get(args.userId);
+    if (!user || user.clerkId !== identity.subject) throw new Error("Not authorized");
+
     await ctx.db.patch(args.userId, {
       twitterAccessToken: undefined,
       twitterRefreshToken: undefined,
@@ -179,8 +189,10 @@ export const disconnectTwitter = mutation({
 export const deleteAccount = mutation({
   args: { userId: v.id("users") },
   handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Not authenticated");
     const user = await ctx.db.get(args.userId);
-    if (!user) throw new Error("User not found");
+    if (!user || user.clerkId !== identity.subject) throw new Error("Not authorized");
 
     // Delete all user's drafts
     const drafts = await ctx.db

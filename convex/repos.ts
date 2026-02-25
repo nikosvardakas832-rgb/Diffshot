@@ -70,6 +70,12 @@ export const selectRepo = mutation({
     repoId: v.id("repos"),
   },
   handler: async (ctx, args) => {
+    // Verify the caller owns this user account
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Not authenticated");
+    const user = await ctx.db.get(args.userId);
+    if (!user || user.clerkId !== identity.subject) throw new Error("Not authorized");
+
     // Deactivate all repos for this user
     const userRepos = await ctx.db
       .query("repos")

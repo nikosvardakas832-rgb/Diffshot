@@ -21,7 +21,8 @@ export default defineSchema({
     createdAt: v.number(),
   })
     .index("by_clerk_id", ["clerkId"])
-    .index("by_email", ["email"]),
+    .index("by_email", ["email"])
+    .index("by_polar_customer_id", ["polarCustomerId"]),
 
   repos: defineTable({
     userId: v.id("users"),

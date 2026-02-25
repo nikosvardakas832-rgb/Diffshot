@@ -1,6 +1,26 @@
 // @ts-nocheck
 import { v } from "convex/values";
-import { mutation, query } from "./_generated/server";
+import { mutation, query, QueryCtx, MutationCtx } from "./_generated/server";
+
+// Helper: get authenticated user from Clerk identity
+async function getAuthenticatedUser(ctx: QueryCtx | MutationCtx) {
+  const identity = await ctx.auth.getUserIdentity();
+  if (!identity) throw new Error("Not authenticated");
+  const user = await ctx.db
+    .query("users")
+    .withIndex("by_clerk_id", (q) => q.eq("clerkId", identity.subject))
+    .unique();
+  if (!user) throw new Error("User not found");
+  return user;
+}
+
+// Helper: verify the caller owns a draft
+async function verifyDraftOwnership(ctx: QueryCtx | MutationCtx, draftId) {
+  const user = await getAuthenticatedUser(ctx);
+  const draft = await ctx.db.get(draftId);
+  if (!draft || draft.userId !== user._id) throw new Error("Not authorized");
+  return { user, draft };
+}
 
 export const storeDrafts = mutation({
   args: {
@@ -140,6 +160,8 @@ export const updateDraft = mutation({
     category: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
+    await verifyDraftOwnership(ctx, args.draftId);
+
     const updates: Record<string, string> = {};
     if (args.hook !== undefined) updates.hook = args.hook;
     if (args.body !== undefined) updates.body = args.body;
@@ -152,6 +174,7 @@ export const updateDraft = mutation({
 export const discardDraft = mutation({
   args: { draftId: v.id("drafts") },
   handler: async (ctx, args) => {
+    await verifyDraftOwnership(ctx, args.draftId);
     await ctx.db.patch(args.draftId, { status: "discarded" });
   },
 });
@@ -175,6 +198,9 @@ export const markPublished = mutation({
 export const generateUploadUrl = mutation({
   args: {},
   handler: async (ctx) => {
+    // Require authentication to generate upload URLs
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Not authenticated");
     return await ctx.storage.generateUploadUrl();
   },
 });
@@ -185,6 +211,7 @@ export const setVisualAsset = mutation({
     visualAssetId: v.id("_storage"),
   },
   handler: async (ctx, args) => {
+    await verifyDraftOwnership(ctx, args.draftId);
     await ctx.db.patch(args.draftId, {
       visualAssetId: args.visualAssetId,
     });

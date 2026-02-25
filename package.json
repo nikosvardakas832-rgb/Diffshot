@@ -15,6 +15,7 @@
     "@polar-sh/checkout": "^0.2.0",
     "@polar-sh/nextjs": "^0.9.3",
     "@resvg/resvg-js": "^2.6.2",
+    "@sentry/nextjs": "^10.40.0",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "convex": "^1.31.7",
@@ -27,6 +28,7 @@
     "satori": "^0.19.2",
     "sharp": "^0.34.5",
     "sonner": "^2.0.7",
+    "svix": "^1.86.0",
     "tailwind-merge": "^3.4.0",
     "zod": "^4.3.6"
   },

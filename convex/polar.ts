@@ -38,10 +38,12 @@ export const upgradeUser = mutation({
 export const downgradeByCustomerId = mutation({
   args: { polarCustomerId: v.string() },
   handler: async (ctx, args) => {
-    const users = await ctx.db.query("users").collect();
-    const user = users.find(
-      (u) => u.polarCustomerId === args.polarCustomerId
-    );
+    const user = await ctx.db
+      .query("users")
+      .withIndex("by_polar_customer_id", (q) =>
+        q.eq("polarCustomerId", args.polarCustomerId)
+      )
+      .unique();
 
     if (user) {
       await ctx.db.patch(user._id, {

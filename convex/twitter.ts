@@ -43,7 +43,8 @@ export const refreshTokenIfNeeded = action({
     });
 
     if (!response.ok) {
-      throw new Error(`Token refresh failed: ${await response.text()}`);
+      console.error("Token refresh failed:", await response.text());
+      throw new Error("Failed to refresh X authentication. Please reconnect your account.");
     }
 
     const data = await response.json();
@@ -71,7 +72,8 @@ export const fetchTwitterUsername = action({
     });
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch Twitter profile: ${await response.text()}`);
+      console.error("Failed to fetch Twitter profile:", await response.text());
+      throw new Error("Failed to fetch X profile. Please try again.");
     }
 
     const data = await response.json();
@@ -132,7 +134,8 @@ export const publishTweet = action({
       });
 
       if (!uploadResponse.ok) {
-        throw new Error(`Media upload failed (${uploadResponse.status}): ${await uploadResponse.text()}`);
+        console.error("Media upload failed:", await uploadResponse.text());
+        throw new Error("Failed to upload image to X. Please try again.");
       }
 
       const uploadData = await uploadResponse.json();
@@ -157,9 +160,8 @@ export const publishTweet = action({
     });
 
     if (!tweetResponse.ok) {
-      throw new Error(
-        `Tweet creation failed: ${await tweetResponse.text()}`
-      );
+      console.error("Tweet creation failed:", await tweetResponse.text());
+      throw new Error("Failed to publish tweet. Please try again.");
     }
 
     const tweetData = await tweetResponse.json();
