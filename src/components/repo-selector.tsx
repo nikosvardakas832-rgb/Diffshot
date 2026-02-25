@@ -96,7 +96,7 @@ export function RepoSelector() {
             className="pl-10"
           />
         </div>
-        <Button variant="outline" onClick={handleRefresh} disabled={loading}>
+        <Button variant="outline" onClick={() => handleRefresh()} disabled={loading}>
           {loading ? (
             <Loader2 className="h-4 w-4 animate-spin" />
           ) : (
