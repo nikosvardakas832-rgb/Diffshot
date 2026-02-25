@@ -89,7 +89,7 @@ export function PublishButton({ draftId }: { draftId: Id<"drafts"> }) {
       size="sm"
       onClick={handlePublish}
       disabled={publishing}
-      className="gap-2 bg-black text-white hover:bg-black/80"
+      className="gap-2 whitespace-nowrap bg-black text-white hover:bg-black/80"
     >
       {publishing ? (
         <Loader2 className="h-3 w-3 animate-spin" />

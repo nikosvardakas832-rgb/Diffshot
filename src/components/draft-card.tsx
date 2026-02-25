@@ -144,7 +144,7 @@ export function DraftCard({ draft, isNewest = false }: DraftCardProps) {
           </div>
 
           {/* Action buttons */}
-          <div className="mt-4 flex items-center gap-2">
+          <div className="mt-4 flex flex-wrap items-center gap-2">
             {draft.status === "pending" && (
               <>
                 <PublishButton draftId={draft._id} />

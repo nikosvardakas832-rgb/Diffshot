@@ -8,7 +8,7 @@ function getConvex() {
 }
 
 export async function GET(request: NextRequest) {
-  const { userId } = await auth();
+  const { userId, getToken } = await auth();
   if (!userId) {
     return NextResponse.redirect(
       new URL("/sign-in", process.env.NEXT_PUBLIC_APP_URL!)
@@ -106,7 +106,13 @@ export async function GET(request: NextRequest) {
   }
 
   // Get Convex user and store tokens
-  const user = await getConvex().query(api.users.getUserByClerkId, {
+  const convex = getConvex();
+  const token = await getToken({ template: "convex" });
+  if (token) {
+    convex.setAuth(token);
+  }
+
+  const user = await convex.query(api.users.getUserByClerkId, {
     clerkId: userId,
   });
 
@@ -119,7 +125,7 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  await getConvex().mutation(api.users.storeTwitterTokens, {
+  await convex.mutation(api.users.storeTwitterTokens, {
     userId: user._id,
     twitterAccessToken: tokenData.access_token,
     twitterRefreshToken: tokenData.refresh_token,
