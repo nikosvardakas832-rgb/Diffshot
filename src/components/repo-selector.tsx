@@ -116,7 +116,7 @@ export function RepoSelector() {
           {repos.length === 0 ? (
             <div className="space-y-3">
               <p>No repos found.</p>
-              <Button onClick={handleRefresh} disabled={loading}>
+              <Button onClick={() => handleRefresh()} disabled={loading}>
                 Fetch repos from GitHub
               </Button>
             </div>
