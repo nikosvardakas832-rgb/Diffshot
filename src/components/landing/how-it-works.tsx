@@ -11,7 +11,7 @@ const steps = [
     icon: Sparkles,
     title: "AI Generates Drafts",
     description:
-      "Diffshot scans your commits, filters noise, and generates 3 visual changelog drafts with branded image cards.",
+      "Diffshot scans your recent commits, filters out merge commits and lockfile noise, and generates 3 drafts — each telling a different story from your work. Not 3 variations. Three unique angles.",
   },
   {
     icon: Send,

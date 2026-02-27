@@ -114,7 +114,7 @@ export function ScanButton({ repoId }: { repoId?: Id<"repos"> }) {
           : error instanceof Error
             ? error.message
             : "Scan failed. Please try again.";
-      if (errorMessage.includes("Generation limit reached")) {
+      if (errorMessage.includes("limit reached")) {
         setShowUpgrade(true);
       } else {
         toast.error(errorMessage);

@@ -15,21 +15,27 @@ const plans = [
     price: "$0",
     period: "forever",
     features: [
-      "3 generations per month",
+      "3 scans per month (3 drafts each)",
       "Unlimited repos",
       "All 3 visual card types",
+      "AI picks your best commits",
+      "Edit drafts before posting",
+      "One-click post to X",
       "Watermarked cards",
     ],
-    notIncluded: ["50 generations per month", "Clean cards"],
+    notIncluded: ["Clean cards (no watermark)", "Priority support"],
   },
   {
     name: "Pro",
     price: "$9",
     period: "/month",
     features: [
-      "50 generations per month",
+      "50 scans per month (3 drafts each)",
       "Unlimited repos",
       "All 3 visual card types",
+      "AI picks your best commits",
+      "Edit drafts before posting",
+      "One-click post to X",
       "Clean cards (no watermark)",
       "Priority support",
     ],
@@ -87,7 +93,7 @@ export default function UpgradePage() {
         user.generationsUsedThisMonth >= 3 && (
           <div className="rounded-xl border border-primary/20 bg-[#B95126]/[0.06] p-4 text-center shadow-[0_0_30px_rgba(185,81,38,0.06)]">
             <p className="text-sm text-primary">
-              You&apos;ve used all 3 free generations this month. Upgrade to
+              You&apos;ve used all 3 free scans this month. Upgrade to
               keep shipping visual changelogs.
             </p>
           </div>

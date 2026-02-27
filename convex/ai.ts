@@ -30,7 +30,7 @@ export const generateDrafts = action({
     const limit = GENERATION_LIMITS[user.tier];
     if (user.generationsUsedThisMonth >= limit) {
       throw new ConvexError(
-        "Generation limit reached. Upgrade to Pro for 50 generations per month."
+        "Scan limit reached. Upgrade to Pro for 50 scans per month."
       );
     }
 

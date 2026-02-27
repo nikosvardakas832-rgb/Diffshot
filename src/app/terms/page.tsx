@@ -189,11 +189,13 @@ export default function TermsPage() {
             </h3>
             <ul className="space-y-2.5 pl-5">
               {[
-                "3 visual changelog generations per month",
+                "3 scans per month (3 drafts each)",
                 "Unlimited repository connections",
                 "All 3 visual card types",
+                "AI picks your best commits",
+                "Edit drafts before posting",
+                "One-click post to X",
                 "\u201CMade with Diffshot\u201D watermark on generated visual cards",
-                "Full publish-to-X functionality",
               ].map((item) => (
                 <li
                   key={item}
@@ -210,9 +212,12 @@ export default function TermsPage() {
             </h3>
             <ul className="space-y-2.5 pl-5">
               {[
-                "50 visual changelog generations per month",
+                "50 scans per month (3 drafts each)",
                 "Unlimited repository connections",
                 "All 3 visual card types",
+                "AI picks your best commits",
+                "Edit drafts before posting",
+                "One-click post to X",
                 "No watermark on generated visual cards",
                 "Priority support",
               ].map((item) => (

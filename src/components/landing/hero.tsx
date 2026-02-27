@@ -203,8 +203,9 @@ export function Hero() {
             {/* Subheadline */}
             <p className="mt-5 max-w-[520px] text-[15px] leading-[1.6] text-[#A0A0A8] md:text-[17px]">
               You ship code every day but nobody sees it. Diffshot scans your
-              GitHub, generates visual changelog cards, and posts them to X — in
-              one click. No writing. No design. Just shipping proof.
+              commits, filters out the noise, and generates visual cards from
+              the work that actually matters — then posts them to X in one
+              click. No writing. No design. Just shipping proof.
             </p>
 
             {/* CTAs */}
@@ -230,7 +231,7 @@ export function Hero() {
 
             {/* Social proof */}
             <p className="mt-4 text-[13px] text-[#A0A0A8]/70">
-              3 generations/month free · No credit card required · Setup in 60
+              3 scans/month free · No credit card required · Setup in 60
               seconds
             </p>
           </div>

@@ -32,7 +32,7 @@ export function FinalCTA() {
         </Link>
 
         <p className="mt-3.5 text-[13px] text-[#A0A0A8]/70">
-          3 generations/month free · No credit card required · Cancel anytime
+          3 scans/month free · No credit card required · Cancel anytime
         </p>
       </div>
     </section>
