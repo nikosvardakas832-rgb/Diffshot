@@ -1,6 +1,6 @@
 export function ExampleCards() {
   return (
-    <section className="relative px-6 py-20 lg:px-8">
+    <section id="features" className="relative px-6 py-20 lg:px-8">
       {/* Subtle section glow */}
       <div className="pointer-events-none absolute inset-0 -z-10">
         <div className="absolute left-1/2 top-1/2 h-[400px] w-[800px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-[#B95126]/[0.03] blur-[140px]" />

@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
 
 /* ─── Tweet Mockup (right side of hero) ─────────────────────────── */
@@ -18,14 +21,14 @@ function TweetMockup() {
         <div className="flex items-center gap-3">
           {/* Avatar */}
           <div className="flex h-10 w-10 items-center justify-center rounded-full bg-gradient-to-br from-[#2A2A30] to-[#3a3a44] text-[14px] font-bold text-[#e6edf3]">
-            AC
+            MR
           </div>
           <div className="flex flex-col">
             <span className="text-[14px] font-bold leading-tight text-[#e6edf3]">
-              ALEX CHEN
+              MARIA RUIZ
             </span>
             <span className="text-[13px] leading-tight text-[#8b949e]">
-              @alexbuilds
+              @mariaships
             </span>
           </div>
         </div>
@@ -46,17 +49,14 @@ function TweetMockup() {
 
       {/* Tweet body */}
       <div className="mt-3 text-[14px] leading-[1.55] text-[#e6edf3] sm:text-[15px]">
-        <p>18k lines later...</p>
+        <p>Just shipped Stripe billing for my SaaS.</p>
         <br />
-        <p>Diffshot can now:</p>
-        <p>• Connect to any GitHub repo</p>
-        <p>• Pull commit history</p>
-        <p>• Generate tweet drafts with AI</p>
-        <p>• Store everything in Convex</p>
+        <p>Took me 3 days but it&apos;s done:</p>
+        <p>- Subscription checkout flow</p>
+        <p>- Webhook handling</p>
+        <p>- Usage-based pricing</p>
         <br />
-        <p>Still rough around the edges, but it works.</p>
-        <br />
-        <p>Now the real work begins: making it useful.</p>
+        <p>Here&apos;s the diff card Diffshot made from my commits:</p>
       </div>
 
       {/* Embedded Diffshot card */}
@@ -72,7 +72,7 @@ function TweetMockup() {
                 className="h-6 w-6 rounded-md"
               />
               <span className="text-[11px] text-[#8b949e] sm:text-[12px]">
-                alexchen/my-saas-app
+                mariaruiz/trackly-app
               </span>
             </div>
             <div className="flex items-center gap-2">
@@ -80,7 +80,7 @@ function TweetMockup() {
                 New Feature
               </span>
               <span className="text-[10px] text-[#8b949e] sm:text-[11px]">
-                Feb 15, 2026
+                Feb 26, 2026
               </span>
             </div>
           </div>
@@ -88,7 +88,7 @@ function TweetMockup() {
           {/* Filename */}
           <div className="mt-3">
             <span className="font-mono text-[10px] text-[#58a6ff] sm:text-[11px]">
-              diffshot/initial-commit
+              src/lib/stripe.ts
             </span>
           </div>
 
@@ -102,11 +102,11 @@ function TweetMockup() {
               <div className="whitespace-nowrap font-mono text-[7px] leading-[1.7] sm:text-[9px]">
                 <div className="flex">
                   <span className="mr-2 min-w-[12px] text-[#484f58]">1</span>
-                  <span className="text-[#e6edf3]">{"// Empty repository"}</span>
+                  <span className="text-[#e6edf3]">{"// TODO: add billing"}</span>
                 </div>
                 <div className="flex">
                   <span className="mr-2 min-w-[12px] text-[#484f58]">2</span>
-                  <span className="text-[#e6edf3]">&nbsp;</span>
+                  <span className="text-[#e6edf3]">{"const plan = 'free';"}</span>
                 </div>
               </div>
             </div>
@@ -119,19 +119,19 @@ function TweetMockup() {
               <div className="whitespace-nowrap font-mono text-[7px] leading-[1.7] sm:text-[9px]">
                 <div className="flex">
                   <span className="mr-2 min-w-[12px] text-[#484f58]">1</span>
-                  <span className="text-[#57C5B6]">{"// Full auth pipeline"}</span>
+                  <span className="text-[#57C5B6]">{"const stripe = new Stripe()"}</span>
                 </div>
                 <div className="flex">
                   <span className="mr-2 min-w-[12px] text-[#484f58]">2</span>
-                  <span className="text-[#57C5B6]">{"// GitHub integration"}</span>
+                  <span className="text-[#57C5B6]">{"await checkout.create()"}</span>
                 </div>
                 <div className="flex">
                   <span className="mr-2 min-w-[12px] text-[#484f58]">3</span>
-                  <span className="text-[#57C5B6]">{"// AI changelog generator"}</span>
+                  <span className="text-[#57C5B6]">{"webhook.on('invoice')"}</span>
                 </div>
                 <div className="flex">
                   <span className="mr-2 min-w-[12px] text-[#484f58]">4</span>
-                  <span className="text-[#57C5B6]">{"// 83 files, 18,610 lines"}</span>
+                  <span className="text-[#57C5B6]">{"// 7 files, 340 lines"}</span>
                 </div>
               </div>
             </div>
@@ -142,10 +142,41 @@ function TweetMockup() {
   );
 }
 
+/* ─── Sticky Mobile CTA ──────────────────────────────────────────── */
+
+function MobileStickyBar() {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setVisible(window.scrollY > 600);
+    };
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  return (
+    <div
+      className={`fixed bottom-0 left-0 right-0 z-50 border-t border-[#2A2A30] bg-[#121214]/90 px-4 py-3 backdrop-blur-xl transition-transform duration-300 md:hidden ${
+        visible ? "translate-y-0" : "translate-y-full"
+      }`}
+    >
+      <Link
+        href="/sign-up"
+        className="flex w-full items-center justify-center rounded-lg bg-[#B95126] py-3 text-[15px] font-medium text-white transition-all hover:bg-[#c75e33]"
+      >
+        Get Started — Free
+      </Link>
+    </div>
+  );
+}
+
 /* ─── Hero Section ────────────────────────────────────────────────── */
 
 export function Hero() {
   return (
+    <>
+    <MobileStickyBar />
     <section className="relative px-6 pb-24 pt-10 sm:pb-32 sm:pt-14 lg:px-8">
       {/* Layered ambient glow */}
       <div className="pointer-events-none absolute inset-0 -z-10">
@@ -176,13 +207,26 @@ export function Hero() {
               one click. No writing. No design. Just shipping proof.
             </p>
 
-            {/* CTA */}
-            <Link
-              href="/sign-up"
-              className="mt-8 inline-flex items-center rounded-lg bg-[#B95126] px-8 py-3.5 text-[15px] font-medium text-white transition-all duration-200 hover:bg-[#c75e33] hover:shadow-[0_0_30px_rgba(185,81,38,0.3)]"
-            >
-              Connect GitHub — Free
-            </Link>
+            {/* CTAs */}
+            <div className="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:gap-4 md:items-start">
+              <Link
+                href="/sign-up"
+                className="inline-flex items-center rounded-lg bg-[#B95126] px-8 py-3.5 text-[15px] font-medium text-white transition-all duration-200 hover:bg-[#c75e33] hover:shadow-[0_0_30px_rgba(185,81,38,0.3)]"
+              >
+                Connect GitHub — Free
+              </Link>
+              <button
+                onClick={() => {
+                  document.getElementById("features")?.scrollIntoView({ behavior: "smooth" });
+                }}
+                className="inline-flex items-center gap-2 rounded-lg border border-[#2A2A30] px-6 py-3.5 text-[15px] font-medium text-[#A0A0A8] transition-all duration-200 hover:border-[#3a3a44] hover:text-[#FAFAFA]"
+              >
+                See examples
+                <svg className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+            </div>
 
             {/* Social proof */}
             <p className="mt-4 text-[13px] text-[#A0A0A8]/70">
@@ -198,5 +242,6 @@ export function Hero() {
         </div>
       </div>
     </section>
+    </>
   );
 }

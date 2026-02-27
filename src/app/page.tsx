@@ -11,7 +11,7 @@ import { Navbar } from "@/components/landing/navbar";
 
 export default function Home() {
   return (
-    <div className="relative min-h-screen bg-background">
+    <div className="relative min-h-screen overflow-x-clip bg-background">
       {/* Ambient corner glows — warm rusty spice wash */}
       <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
         {/* Bottom-left — primary warm orb */}
